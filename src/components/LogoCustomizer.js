@@ -464,7 +464,7 @@ export default function LogoCustomizer() {
         </div>
         {/* Logo  */}
       <div className={styles.logoWrapper}>
-      <h2>Your Customized Logo</h2>
+      <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
       <div
           id="logo"
           ref={logoRef} // Attach the reference to this div

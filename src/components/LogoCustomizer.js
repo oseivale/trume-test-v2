@@ -295,7 +295,7 @@ export default function LogoCustomizer() {
       </h1>
       <div style={{ width: "90%", margin: "0rem auto 3rem" }}>
         {/* <h2>Core Value Options</h2> */}
-        <p>
+        <p className={roboto_condensed.className}>
           Select any 5 of the core value options below. Your core values will
           show up in the logo template below. Core value selection order
           goes from the tallest bar to the shortest.

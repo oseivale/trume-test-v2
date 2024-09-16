@@ -281,7 +281,7 @@ export default function LogoCustomizer() {
   };
 
   return (
-    <div className={roboto_condensed.className}>
+    <div className={`${styles.customizationContainer }${roboto_condensed.className}`}>
       <h1
         className={roboto_condensed.className}
         style={{

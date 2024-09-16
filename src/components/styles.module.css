@@ -1,3 +1,7 @@
+.customizationContainer{
+  width: 100%;
+}
+
 .grid {
     display: flex;
     max-width: fit-content;

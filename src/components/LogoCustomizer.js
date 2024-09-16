@@ -25,10 +25,11 @@ const ClearIcon = () => (
 
 export default function LogoCustomizer() {
   const router = useRouter();
-  const { productId, variantId, productTitle, image } = router.query;
+  // const { productId, variantId, productTitle, image } = router.query;
 
-  console.log('productId', productId)
-  console.log('variantId', variantId)
+  // console.log('productId', productId)
+  // console.log('variantId', variantId)
+  console.log('router.query', router.query)
 
   // Create a reference to the logo div
   const logoRef = useRef(null);

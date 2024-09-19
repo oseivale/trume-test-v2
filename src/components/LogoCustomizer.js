@@ -592,6 +592,8 @@ export default function LogoCustomizer() {
                   height: "350px",
                   borderRadius: "10px",
                   overflow: "hidden",
+                  width: 'auto',
+                
                   // width: "430px",
                   // width: "380px",
                   position: "relative",
@@ -707,8 +709,8 @@ export default function LogoCustomizer() {
               <div>
                 <Image
                   className={styles.wordMark}
-                  width={100}
-                  height={100}
+                  width={1000}
+                  height={1000}
                   src={"/TRUME_wordmarks_classic.png"}
                 />
               </div>

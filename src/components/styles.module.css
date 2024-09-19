@@ -162,7 +162,7 @@
 .confirmOptions {
   display: flex;
   /* justify-content: space-between; */
-  /* flex-direction: row; */
+  flex-direction: column;
   /* max-width: 90%; */
   margin: 0rem auto 2rem;
   /* display: flex; */
@@ -375,8 +375,9 @@
 
 .wordMark {
   display: block;
+  height: 120px;
   width: auto;
-  margin: 1rem auto;
+  margin: .5rem auto;
 }
 
 @media screen and (min-width: 740px) {

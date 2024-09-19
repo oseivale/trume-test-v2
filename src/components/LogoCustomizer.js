@@ -583,7 +583,7 @@ export default function LogoCustomizer() {
           <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
           {/* Attach the reference to this div */}
           <div ref={logoRef}>
-            <div id="logo" style={{ width: "400px", margin: "0 auto" }}>
+            <div className={styles.logo} id="logo">
               <div
                 style={{
                   display: "flex",

@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         recipient: recipientDetails,
         items: [
           {
-            variant_id: 9323,  // Product variant ID from Printful
+            variant_id: productVariantId,  // Product variant ID from Printful
             quantity: 1,
             files: [
               {

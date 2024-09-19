@@ -5,8 +5,9 @@ import { data } from "../data";
 import styles from "./styles.module.css";
 import { toPng, toJpeg } from "html-to-image";
 import { roboto_condensed } from "@/fonts";
-import { useRouter } from 'next/router';
-
+import { useRouter } from "next/router";
+import { variantMapping } from "../../productVariants";
+import Image from "next/image";
 
 const ClearIcon = () => (
   <svg
@@ -29,15 +30,13 @@ export default function LogoCustomizer() {
 
   useEffect(() => {
     if (productTitle && variantId) {
-      console.log('Product Title:', productTitle);
-      console.log('Variant ID:', variantId);
+      console.log("Product Title:", productTitle);
+      console.log("Variant ID:", variantId);
     }
   }, [productTitle, variantId]);
 
-
-
-  console.log('productId', productId)
-  console.log('variantId', variantId)
+  console.log("productId", productId);
+  console.log("variantId", variantId);
   // console.log('router.query', router.query)
 
   // Create a reference to the logo div
@@ -55,11 +54,13 @@ export default function LogoCustomizer() {
     red: ["#8B0000", "#B22222", "#DC143C", "#FF4500", "#FF6347"],
   };
 
-  const [selectedColor, setSelectedColor] = useState(null); // To store the selected color
+  const [selectedColor, setSelectedColor] = useState("#ffffff"); // To store the selected color
 
   const [selectedValues, setSelectedValues] = useState([]);
   const [singleColorMode, setSingleColorMode] = useState(false);
   const [selectedPalette, setSelectedPalette] = useState(null); // To store the selected palette
+  // const [color, setColor] = useState("#ffffff");
+  const [isPickerActive, setPickerActive] = useState(false); // controls whether the color picker is active
 
   // Custom order for mapping selected values to bars
   const customBarOrder = [2, 0, 1, 4, 3];
@@ -76,23 +77,25 @@ export default function LogoCustomizer() {
 
   const handleClearAll = () => {
     setSelectedValues([]);
-    setSelectedColor(null); // Clear the selected color
+    //setSelectedColor(null); // Clear the selected color
     setSingleColorMode(false); // Turn off single color mode
     setSelectedPalette(null);
+    setPickerActive(false);
   };
 
   const handleToggleSingleColor = () => {
     setSingleColorMode(!singleColorMode);
     if (!singleColorMode) {
-      setSelectedColor(null); // Deselect the preset color if Single Color Mode is activated
+      //setSelectedColor(null); // Deselect the preset color if Single Color Mode is activated
       setSelectedPalette(null);
+      setPickerActive(false);
     }
   };
   const handleColorSelection = (color) => {
     if (selectedColor === color) {
       setSelectedColor(null); // Deselect the color
     } else {
-      setSelectedColor(color);
+      //setSelectedColor(color);
       setSingleColorMode(false); // Turn off single color mode
       setSelectedPalette(null);
     }
@@ -104,7 +107,8 @@ export default function LogoCustomizer() {
     } else {
       setSelectedPalette(palette);
       setSingleColorMode(false); // Turn off single color mode
-      setSelectedColor(null); // Deselect any custom color
+      //setSelectedColor(null); // Deselect any custom color
+      setPickerActive(false);
     }
   };
 
@@ -216,6 +220,11 @@ export default function LogoCustomizer() {
       return;
     }
 
+    // Printful product variant ID
+    const productVariantId = variantMapping[variantId];
+    // const productVariantId = 4025;
+    console.log("productVariantId from customizer", productVariantId);
+
     setStatus("Sending order to Printful...");
     const recipientDetails = {
       name: "Valerie Osei",
@@ -226,7 +235,7 @@ export default function LogoCustomizer() {
       zip: "2200",
       items: [
         {
-          variant_id: 9323,
+          variant_id: productVariantId,
           quantity: 1,
           files: [
             {
@@ -236,8 +245,6 @@ export default function LogoCustomizer() {
         },
       ],
     };
-
-    const productVariantId = "44582110658737"; // Printful product variant ID
 
     const response = await fetch("/api/printful", {
       method: "POST",
@@ -261,8 +268,97 @@ export default function LogoCustomizer() {
     }
   };
 
+  const handleColorChange = (event) => {
+    if (isPickerActive) {
+      setSelectedColor(event.target.value);
+      // setPickerActive(!isPickerActive);
+      // setPickerActive(true)
+    } else {
+      setSelectedPalette(null);
+      setSingleColorMode(false); // Turn off single color mode
+      setSelectedColor(null);
+    }
+  };
+
+  const toggleColorPicker = () => {
+    setPickerActive(!isPickerActive);
+    setSelectedPalette(null);
+    setSingleColorMode(false); // Turn off single color mode
+    // setSelectedColor(null);
+  };
+
+  // function getLuminance(hexColor) {
+  //   const rgb = hexToRgb(hexColor);
+  //   const a = rgb.map(v => {
+  //     v /= 255;
+  //     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  //   });
+  //   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  // }
+
+  // function getTextColor(bgColor) {
+  //   const luminance = getLuminance(bgColor);
+  //   return luminance > 0.5 ? '#000000' : '#FFFFFF'; // Light background = black text, dark background = white text
+  // }
+
+  // Function to calculate the luminance of a hex color
+  function getLuminance(hexColor) {
+    const rgb = hexToRgb(hexColor);
+    const a = rgb.map((v) => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+
+  // Function to convert hex to RGB
+  function hexToRgb(hex) {
+    let r = 0,
+      g = 0,
+      b = 0;
+    if (hex.length === 7) {
+      r = parseInt(hex.slice(1, 3), 16);
+      g = parseInt(hex.slice(3, 5), 16);
+      b = parseInt(hex.slice(5, 7), 16);
+    }
+    return [r, g, b];
+  }
+
+  // Function to darken a color by a certain percentage
+  function darkenColor(hex, percent) {
+    const rgb = hexToRgb(hex);
+    const darkerRgb = rgb.map((v) => Math.max(0, v - (v * percent) / 100));
+    return `rgb(${darkerRgb.join(",")})`;
+  }
+
+  // Function to determine the appropriate text color
+  function getTextColor(bgColor) {
+    const luminance = getLuminance(bgColor);
+    // If the background is light, use white text
+    if (luminance > 0.5) {
+      return darkenColor(bgColor, 50);
+    } else {
+      // If the background is dark, use a darker shade of the background color
+      return "#FFFFFF";
+    }
+  }
+
+  const textColor = getTextColor(selectedColor);
+
+  // function hexToRgb(hex) {
+  //   let r = 0, g = 0, b = 0;
+  //   if (hex.length === 7) {
+  //     r = parseInt(hex.slice(1, 3), 16);
+  //     g = parseInt(hex.slice(3, 5), 16);
+  //     b = parseInt(hex.slice(5, 7), 16);
+  //   }
+  //   return [r, g, b];
+  // }
+
   return (
-    <div className={`${styles.customizationContainer }${roboto_condensed.className}`}>
+    <div
+      className={`${styles.customizationContainer}${roboto_condensed.className}`}
+    >
       <h1
         className={roboto_condensed.className}
         style={{
@@ -276,11 +372,25 @@ export default function LogoCustomizer() {
       </h1>
       <div style={{ width: "90%", margin: "0rem auto 3rem" }}>
         {/* <h2>Core Value Options</h2> */}
-        <p className={roboto_condensed.className}>
-          Select any 5 of the core value options below. Your core values will
-          show up in the logo template below. Core value selection order
-          goes from the tallest bar to the shortest.
-        </p>
+        <div className={styles.coreValueSelectionDescription}>
+          <p className={roboto_condensed.className}>
+            Select any 5 of the core value options below. Your core values will
+            show up in the logo template below for you to preview.{" "}
+          </p>
+          <p className={roboto_condensed.className}>
+            Core value selection order starts with the first selected option
+            being the tallest bar, progressing to the 5th selected option being
+            the shortest bar.
+          </p>
+          <p
+            className={roboto_condensed.className}
+            style={{ fontWeight: "800" }}
+          >
+            Scroll the core values below to the left, to view all the core value
+            options.
+          </p>
+        </div>
+
         <div className={styles.coreValueWrapper}>
           {Object.keys(data).map((key) => {
             const isSelected = selectedValues.includes(key);
@@ -353,87 +463,112 @@ export default function LogoCustomizer() {
         <div className={styles.confirmOptions}>
           {/* Custom Color Settings Start  */}
           {/* <h2>Additional Customization Options</h2> */}
-          <div>
-             <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <div>
-              <label
-                className={`${roboto_condensed.className} ${styles.switchLabel}`}
-              >
-                Single Color Mode:
-              </label>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  checked={singleColorMode}
-                  onChange={handleToggleSingleColor}
-                />
-
-                <span className={styles.slider}></span>
-              </label>
-            </div>
-          </div>
-          <div className={styles.customColor} style={{ marginBottom: "20px" }}>
-            <label
-              className={`${roboto_condensed.className} ${styles.customColorLabel}`}
+          <div className={styles.customColours}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
             >
-              Pick a Custom Color:
-            </label>
-            <div>
-              {colorOptions.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => handleColorSelection(color)}
-                  style={{
-                    backgroundColor: color,
-                    width: "30px",
-                    height: "30px",
-                    margin: "0 5px",
-                    border: selectedColor === color ? "3px solid #000" : "none",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              className={`${roboto_condensed.className} ${styles.paletteLabel}`}
-            >
-              Pick a Palette:
-            </label>
-            <div>
-              {Object.keys(palettes).map((palette) => (
-                <button
-                  key={palette}
-                  onClick={() => handlePaletteSelection(palette)}
-                  className={roboto_condensed.className}
-                  style={{
-                    backgroundColor: palettes[palette][2], // Displaying the middle color as the button color
-                    width: "60px",
-                    height: "30px",
-                    margin: "0 5px",
-                    border:
-                      selectedPalette === palette ? "3px solid #000" : "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    color: "white",
-                  }}
+              <div className={styles.singleColorMode}>
+                <label
+                  className={`${roboto_condensed.className} ${styles.switchLabel}`}
                 >
-                  {palette.charAt(0).toUpperCase() + palette.slice(1)}
-                </button>
-              ))}
+                  Single Color Mode:
+                </label>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={singleColorMode}
+                    onChange={handleToggleSingleColor}
+                  />
+
+                  <span className={styles.slider}></span>
+                </label>
+                <p className={roboto_condensed.className}>
+                  Selecting single colour mode will change all the bars to the
+                  colour of your first selected core value.
+                </p>
+              </div>
             </div>
+            <div
+              className={styles.customColor}
+              style={{ marginBottom: "20px" }}
+            >
+              <div>
+                <div
+                  className={`${styles.colorPickerCheckBox} ${roboto_condensed.className}`}
+                >
+                  <label htmlFor="togglePicker">
+                    Enable Color Picker
+                    <input
+                      type="checkbox"
+                      id={styles.togglePicker}
+                      name="togglePicker"
+                      checked={isPickerActive}
+                      onChange={toggleColorPicker}
+                    />
+                  </label>
+                  <div
+                    className={
+                      isPickerActive ? styles.expand : styles.collapsibleContent
+                    }
+                  >
+                    <p>
+                      Checking this box will activate a single solid colour
+                      option, chosen by you. All the bars will be the same
+                      colour. Select your custom colour using the colour picker
+                      below:
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`${styles.colorPicker} ${roboto_condensed.className}`}
+                >
+                  <label for="colorPicker">Choose a color:</label>
+                  <input
+                    type="color"
+                    id="colorPicker"
+                    name="colorPicker"
+                    value={selectedColor}
+                    onChange={handleColorChange}
+                  />
+                  {/* <p id="colorCode" className={styles.customColorCode}>{selectedColor}</p> */}
+                </div>
+              </div>
+            </div>
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                className={`${roboto_condensed.className} ${styles.paletteLabel}`}
+              >
+                Pick a Palette:
+              </label>
+              <div>
+                {Object.keys(palettes).map((palette) => (
+                  <button
+                    key={palette}
+                    onClick={() => handlePaletteSelection(palette)}
+                    className={roboto_condensed.className}
+                    style={{
+                      backgroundColor: palettes[palette][2], // Displaying the middle color as the button color
+                      width: "60px",
+                      height: "30px",
+                      margin: "0 5px",
+                      border:
+                        selectedPalette === palette ? "3px solid #000" : "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      color: "white",
+                    }}
+                  >
+                    {palette.charAt(0).toUpperCase() + palette.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Custom Color Settings Start End */}
           </div>
-          {/* Custom Color Settings Start End */}
-          </div>
-         
 
           {/* Clear All Button  */}
           <button
@@ -444,134 +579,147 @@ export default function LogoCustomizer() {
           </button>
         </div>
         {/* Logo  */}
-      <div className={styles.logoWrapper}>
-      <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
-      <div
-          id="logo"
-          ref={logoRef} // Attach the reference to this div
-          style={{
-            display: "flex",
-            margin: '0 auto',
-            alignItems: "flex-end",
-            height: "350px",
-            borderRadius: "10px",
-            overflow: "hidden",
-            //   width: "430px",
-            width: "400px",
-            position: "relative",
-            top: "0",
-            // left: "15%",
-            // marginTop: '4rem'
-            //   margin: "30px auto",
-          }}
-        >
-          
-          {Array.from({ length: 5 }).map((_, index) => {
-            // const barIndex = customBarOrder[index];
-            //   const selectedKey = selectedValues[barIndex];
-            //   const backgroundColor = singleColorMode
-            //     ? selectedValues.length > 1
-            //       ? data[selectedValues[0]].colourHex
-            //       : '#e0e0e0'
-            //     : selectedColor
-            //     ? selectedColor
-            //     : selectedKey
-            //     ? data[selectedKey].colourHex
-            //     : '#e0e0e0';
-
-            // Determine the appropriate color for each bar
-            const barIndex = customBarOrder[index];
-            const selectedKey = selectedValues[barIndex];
-
-            let backgroundColor;
-
-            if (singleColorMode) {
-              // In single color mode, use the first selected value's color or the custom color
-              backgroundColor =
-                selectedValues.length > 1
-                  ? data[selectedValues[0]].colourHex
-                  : selectedValues.length === 1
-                  ? data[selectedValues[0]].colourHex
-                  : "#e0e0e0";
-            } else if (selectedPalette) {
-              // If a palette is selected, use the corresponding color from the palette
-              backgroundColor = palettes[selectedPalette][index];
-            } else if (selectedColor) {
-              // Use the custom selected color if no palette is selected
-              backgroundColor = selectedColor;
-            } else {
-              // Default behavior for individual value selection
-              backgroundColor = selectedKey
-                ? data[selectedKey].colourHex
-                : "#e0e0e0";
-            }
-
-            return (
+        <div className={styles.logoWrapper}>
+          <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
+          {/* Attach the reference to this div */}
+          <div ref={logoRef}>
+            <div id="logo" style={{ width: "400px", margin: "0 auto" }}>
               <div
-                key={index}
-                className={styles[`option_${index}`]}
                 style={{
-                  flex: 1,
-
-                  backgroundColor: backgroundColor,
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  color: "#fff",
-                  padding: "10px",
-                  boxSizing: "border-box",
-                  textAlign: "center",
-                  marginRight: "1rem",
-                  borderRadius: "55px",
+                  margin: "0 auto",
+                  alignItems: "flex-end",
+                  height: "350px",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  // width: "430px",
+                  // width: "380px",
+                  position: "relative",
+                  top: "0",
+                  // left: "15%",
+                  // marginTop: '4rem'
+                  //   margin: "30px auto",
                 }}
               >
-                {selectedKey ? (
-                  <>
-                    <span
-                      className={styles.coreValueLabel}
+                {Array.from({ length: 5 }).map((_, index) => {
+                  // const barIndex = customBarOrder[index];
+                  //   const selectedKey = selectedValues[barIndex];
+                  //   const backgroundColor = singleColorMode
+                  //     ? selectedValues.length > 1
+                  //       ? data[selectedValues[0]].colourHex
+                  //       : '#e0e0e0'
+                  //     : selectedColor
+                  //     ? selectedColor
+                  //     : selectedKey
+                  //     ? data[selectedKey].colourHex
+                  //     : '#e0e0e0';
+
+                  // Determine the appropriate color for each bar
+                  const barIndex = customBarOrder[index];
+                  const selectedKey = selectedValues[barIndex];
+
+                  let backgroundColor;
+
+                  if (singleColorMode) {
+                    // In single color mode, use the first selected value's color or the custom color
+                    backgroundColor =
+                      selectedValues.length > 1
+                        ? data[selectedValues[0]].colourHex
+                        : selectedValues.length === 1
+                        ? data[selectedValues[0]].colourHex
+                        : "#e0e0e0";
+                  } else if (selectedPalette) {
+                    // If a palette is selected, use the corresponding color from the palette
+                    backgroundColor = palettes[selectedPalette][index];
+                  } else if (selectedColor && isPickerActive) {
+                    // Use the custom selected color if no palette is selected
+                    backgroundColor = selectedColor;
+                  } else {
+                    // Default behavior for individual value selection
+                    backgroundColor = selectedKey
+                      ? data[selectedKey].colourHex
+                      : "#e0e0e0";
+                  }
+
+                  return (
+                    <div
+                      key={index}
+                      className={styles[`option_${index}`]}
                       style={{
-                        fontSize: "40px",
-                        fontWeight: "bold",
-                        paddingBottom: ".55rem",
-                        //   margin:'2rem auto',
+                        flex: 1,
+
+                        backgroundColor: backgroundColor,
                         display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
-                        color: "white",
+                        justifyContent: "flex-end",
+                        color: "#fff",
+                        padding: "10px",
+                        boxSizing: "border-box",
+                        textAlign: "center",
+                        margin: "0 .45rem",
+                        borderRadius: "55px",
                       }}
                     >
-                      <h style={{ fontSize: "2rem" }}>
-                        {data[selectedKey].shortCode[0]}
-                      </h>
-                      <p style={{ fontSize: "1.3rem" }}>
-                        {data[selectedKey].shortCode[1]}
-                      </p>
-                    </span>
+                      {selectedKey ? (
+                        <>
+                          <span
+                            className={styles.coreValueLabel}
+                            style={{
+                              fontSize: "40px",
+                              fontWeight: "bold",
+                              paddingBottom: ".55rem",
+                              //   margin:'2rem auto',
+                              display: "flex",
+                              alignItems: "center",
+                              color:
+                                isPickerActive && textColor
+                                  ? textColor
+                                  : "white",
+                            }}
+                          >
+                            <h style={{ fontSize: "2rem" }}>
+                              {data[selectedKey].shortCode[0]}
+                            </h>
+                            <p style={{ fontSize: "1.3rem" }}>
+                              {data[selectedKey].shortCode[1]}
+                            </p>
+                          </span>
 
-                    {/* <span style={{ fontSize: '12px' }}>{data[selectedKey].name}</span> */}
-                  </>
-                ) : (
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      color: "#aaa",
-                      paddingBottom: "2rem",
-                    }}
-                  >
-                    Select Value
-                  </span>
-                )}
+                          {/* <span style={{ fontSize: '12px' }}>{data[selectedKey].name}</span> */}
+                        </>
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "14px",
+                            color: "#aaa",
+                            paddingBottom: "2rem",
+                          }}
+                        >
+                          Select Value
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+              {/* True Me Wordmark  */}
+              <div>
+                <Image
+                  className={styles.wordMark}
+                  width={100}
+                  height={100}
+                  src={"/TRUME_wordmarks_classic.png"}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-        
+
         {/* Image Processing  */}
         <div className={styles.buttonWrapper}>
-  
           <div className={styles.finalComfirm}>
-          {/* <h2>Finalize Your Logo</h2> */}
+            {/* <h2>Finalize Your Logo</h2> */}
             <div className={styles.confirmationWrapper}>
               <button
                 className={`${roboto_condensed.className} ${styles.confirm}`}
@@ -588,6 +736,7 @@ export default function LogoCustomizer() {
                 Place Order
               </button>
               <p
+                className={roboto_condensed.className}
                 style={{
                   maxWidth: "140px",
                   textAlign: "center",

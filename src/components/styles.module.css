@@ -402,9 +402,12 @@
       max-width: fit-content;
   }
   
-  /* .buttonWrapper button{
-    width: 5rem;
-  } */
+  .wordMark {
+    display: block;
+    height: 110px;
+    width: auto;
+    margin: .5rem auto;
+  }
   
   .coreValueSelectionDescription{
     line-height: .5;

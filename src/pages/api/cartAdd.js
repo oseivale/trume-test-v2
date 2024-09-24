@@ -23,7 +23,7 @@ export default async function handler(req, res) {
             quantity: 1,
             properties: {
               "Custom Image": imageUrl,
-              // imageUrl: 'https://res.cloudinary.com/dnoiiw1jg/image/upload/v1726802965/ruwkh5yg1xldxpgvlsvw.png'
+              // imageUrl: 'https://res.cloudinary.com/dnoiiw1jg/image/upload/v1726802965/ruwkh5yg1xldxpgvlsvw.png' //
             },
           }),
         }

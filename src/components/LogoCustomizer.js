@@ -61,7 +61,10 @@ export default function LogoCustomizer() {
   const [selectedPalette, setSelectedPalette] = useState(null); // To store the selected palette
   // const [color, setColor] = useState("#ffffff");
   const [isPickerActive, setPickerActive] = useState(false); // controls whether the color picker is active
-
+  const [variantIdState, setVariantIdState] = useState(null);
+  const [cartItems, setCartItems] = useState([])
+  const [product, setProduct] = useState({})
+  // const [logoUrl, setLogoUrl] = useState("");
   // Custom order for mapping selected values to bars
   const customBarOrder = [2, 0, 1, 4, 3];
 
@@ -174,6 +177,12 @@ export default function LogoCustomizer() {
     }
   };
 
+  // Printful product variant ID
+  const productVariantId = variantMapping[variantId];
+  const handleVariantSelection = (id) => {
+    setVariantIdState(id); // Assuming `id` is the Shopify product variant ID
+  };
+
   const generateImage = async () => {
     if (logoRef.current) {
       // Get the dimensions of the logo element
@@ -195,7 +204,11 @@ export default function LogoCustomizer() {
       })
         .then((dataUrl) => {
           console.log("image data updated!!");
-          setImageData(dataUrl);
+
+          uploadImageToCloudinary(dataUrl).then((cloudinaryImg) => {
+            setImageData(cloudinaryImg);
+            handleVariantSelection(variantId);
+          });
         })
         .catch((err) => {
           console.error("Failed to export image", err);
@@ -222,7 +235,9 @@ export default function LogoCustomizer() {
 
     // Printful product variant ID
     const productVariantId = variantMapping[variantId];
-    // const productVariantId = 4025;
+    // const handleVariantSelection = (id) => {
+    //   setVariantIdState(id); // Assuming `id` is the Shopify product variant ID
+    // };
     console.log("productVariantId from customizer", productVariantId);
 
     setStatus("Sending order to Printful...");
@@ -287,20 +302,6 @@ export default function LogoCustomizer() {
     // setSelectedColor(null);
   };
 
-  // function getLuminance(hexColor) {
-  //   const rgb = hexToRgb(hexColor);
-  //   const a = rgb.map(v => {
-  //     v /= 255;
-  //     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  //   });
-  //   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-  // }
-
-  // function getTextColor(bgColor) {
-  //   const luminance = getLuminance(bgColor);
-  //   return luminance > 0.5 ? '#000000' : '#FFFFFF'; // Light background = black text, dark background = white text
-  // }
-
   // Function to calculate the luminance of a hex color
   function getLuminance(hexColor) {
     const rgb = hexToRgb(hexColor);
@@ -345,15 +346,141 @@ export default function LogoCustomizer() {
 
   const textColor = getTextColor(selectedColor);
 
-  // function hexToRgb(hex) {
-  //   let r = 0, g = 0, b = 0;
-  //   if (hex.length === 7) {
-  //     r = parseInt(hex.slice(1, 3), 16);
-  //     g = parseInt(hex.slice(3, 5), 16);
-  //     b = parseInt(hex.slice(5, 7), 16);
+  //   const addToCart = async (variantId, logoUrl) => {
+  //     console.log('variantId-d-d', variantId)
+  //     console.log('logoUrl-l-l', logoUrl)
+
+  //     try {
+  //       const response = await fetch('/cart/add.js', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Accept': 'application/json',
+  //           'Access-Control-Allow-Origin': '*',
+  //         },
+  //         body: JSON.stringify({
+  //           id: variantId,
+  //           quantity: 1,
+  //           properties: {
+  //             'Custom Logo': logoUrl,
+  //           },
+  //         }),
+  //       });
+  // console.log('response', response)
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log('data', data)
+  //         setStatus('Product added to cart!');
+  //         // Optionally, redirect to the cart page or update the cart count in the UI
+  //       } else {
+  //         throw new Error('Failed to add to cart');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error:', error);
+  //       setStatus('Error adding to cart');
+  //     }
+  //   };
+
+  function refreshCart() {
+    fetch("/api/updateCartLines")
+      .then((response) => response.json().then(data => setCartItems(...data.items, product)))
+  }
+
+  // const addToCart = async (variantId, imageUrl) => {
+  //   console.log("productId from add to cart", variantId);
+  //   console.log("quantity from add to cart", imageUrl);
+
+  //   const response = await fetch("/api/cartAdd", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ variantId, imageUrl }),
+  //   });
+
+  //   // console.log("response", response.json().then(data => setProduct(data)));
+
+
+  //   if (!response.ok) {
+  //     console.error("Error adding to cart:", response.statusText);
+  //   } else {
+      
+  //     await response.json().then(data => setProduct(data))
+  //     await refreshCart()
+  //     console.log("Item added to cart", cartItems);
+      
   //   }
-  //   return [r, g, b];
-  // }
+  // };
+
+  const addToCart = async (variantId, imageUrl) => {
+    console.log("productId from add to cart", variantId);
+    console.log("quantity from add to cart", imageUrl);
+  
+    try {
+      // Step 1: Send request to the server to add item to cart
+      const response = await fetch("/api/cartAdd", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: JSON.stringify({ variantId, imageUrl }),
+      });
+  
+      if (!response.ok) {
+        console.error("Error adding to cart:", response.statusText);
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Item added to cart", data);
+  
+      // Step 2: Open the cart drawer
+      // await openCartDrawer();
+  
+      // Step 3: Refresh the cart drawer contents
+      refreshCartDrawer();
+  
+    } catch (error) {
+      console.error("An error occurred while adding to cart:", error);
+    }
+  };
+  
+  // Function to open the cart drawer
+  const openCartDrawer = () => {
+    const cartDrawer = document.querySelector(['cart-side-drawer']);
+    console.log('cartDrawer', cartDrawer)
+    if (cartDrawer) {
+      cartDrawer.style.display = "flex"; // Assuming 'active' class opens the drawer
+    }
+  };
+  
+  // Function to refresh the cart drawer contents
+  const refreshCartDrawer = async () => {
+    try {
+      const response = await fetch('/api/cart');
+      if (!response.ok) {
+        console.error("Error refreshing cart drawer:", response.statusText);
+        return;
+      }
+  
+      const cartData = await response.json();
+      console.log('cart-----', cartData)
+      // updateCartUI(cartData); // Function to update the cart drawer with new data
+  
+    } catch (error) {
+      console.error("An error occurred while refreshing the cart drawer:", error);
+    }
+  };
+  
+  // Function to update the cart drawer UI
+  const updateCartUI = (cartData) => {
+    const cartItemsContainer = document.querySelector('[data-cart-drawer-body]');
+    if (cartItemsContainer) {
+      // Update the cart UI here with the cartData, like rendering new items, updating totals, etc.
+      // This part depends on how your theme and UI are structured
+    }
+  };
 
   return (
     <div
@@ -592,8 +719,8 @@ export default function LogoCustomizer() {
                   height: "350px",
                   borderRadius: "10px",
                   overflow: "hidden",
-                  width: 'auto',
-                
+                  width: "auto",
+
                   // width: "430px",
                   // width: "380px",
                   position: "relative",
@@ -661,6 +788,7 @@ export default function LogoCustomizer() {
                         textAlign: "center",
                         margin: "0 .45rem",
                         borderRadius: "55px",
+                        width: "65px",
                       }}
                     >
                       {selectedKey ? (
@@ -674,6 +802,7 @@ export default function LogoCustomizer() {
                               //   margin:'2rem auto',
                               display: "flex",
                               alignItems: "center",
+
                               color:
                                 isPickerActive && textColor
                                   ? textColor
@@ -736,6 +865,10 @@ export default function LogoCustomizer() {
                 onClick={handlePlaceOrder}
               >
                 Place Order
+              </button>
+              {/* Add to cart */}
+              <button onClick={() => addToCart(variantId, imageData)}>
+                Add to Cart
               </button>
               <p
                 className={roboto_condensed.className}

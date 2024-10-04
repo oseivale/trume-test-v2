@@ -8,6 +8,11 @@ import { roboto_condensed } from "@/fonts";
 import { useRouter } from "next/router";
 import { variantMapping } from "../../productVariants";
 import Image from "next/image";
+import Client from "shopify-buy";
+
+import createApp from "@shopify/app-bridge";
+import { getSessionToken } from "@shopify/app-bridge-utils";
+import { Redirect } from "@shopify/app-bridge/actions";
 
 const ClearIcon = () => (
   <svg
@@ -27,6 +32,24 @@ const ClearIcon = () => (
 export default function LogoCustomizer() {
   const router = useRouter();
   const { productId, variantId, productTitle, image } = router.query;
+
+  // useEffect(() => {
+  //   const sendMessage = () => {
+  //     const data = {
+  //       message: 'add-to-cart',
+  //       payload: {
+  //         variantId: variantId,
+  //         customAttributes: [{ key: 'Logo', value: 'logo-url-here' }],
+  //       },
+  //     };
+
+  //     // Sending the message to the parent window (Shopify Store)
+  //     window.parent.postMessage(data, '*');
+  //   };
+
+  //   // Trigger the function when needed
+  //   sendMessage();
+  // }, []);
 
   useEffect(() => {
     if (productTitle && variantId) {
@@ -62,10 +85,14 @@ export default function LogoCustomizer() {
   // const [color, setColor] = useState("#ffffff");
   const [isPickerActive, setPickerActive] = useState(false); // controls whether the color picker is active
   const [variantIdState, setVariantIdState] = useState(null);
-  const [cartItems, setCartItems] = useState([])
-  const [product, setProduct] = useState({})
+  const [cartItems, setCartItems] = useState([]);
+  const [product, setProduct] = useState({});
   // const [logoUrl, setLogoUrl] = useState("");
   // Custom order for mapping selected values to bars
+  const [checkoutId, setCheckoutId] = useState(null);
+  const [lineItems, setLineItems] = useState([]);
+  const [quantity, setQuantity] = useState(1); // Set the initial quantity to 1
+
   const customBarOrder = [2, 0, 1, 4, 3];
 
   const handleButtonClick = (key) => {
@@ -283,6 +310,19 @@ export default function LogoCustomizer() {
     }
   };
 
+  // Update the quantity when the user changes the input
+  // const handleQuantityChange = (e) => {
+  //   setQuantity(e.target.value);
+  // };
+
+  const incrementQuantity = (e) => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const decrementQuantity = (e) => {
+    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
+
   const handleColorChange = (event) => {
     if (isPickerActive) {
       setSelectedColor(event.target.value);
@@ -346,141 +386,563 @@ export default function LogoCustomizer() {
 
   const textColor = getTextColor(selectedColor);
 
-  //   const addToCart = async (variantId, logoUrl) => {
-  //     console.log('variantId-d-d', variantId)
-  //     console.log('logoUrl-l-l', logoUrl)
+  const shopifyClient = Client.buildClient({
+    domain: "d5b9de-6c.myshopify.com",
+    storefrontAccessToken:
+      process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+  });
 
-  //     try {
-  //       const response = await fetch('/cart/add.js', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Accept': 'application/json',
-  //           'Access-Control-Allow-Origin': '*',
-  //         },
-  //         body: JSON.stringify({
-  //           id: variantId,
-  //           quantity: 1,
-  //           properties: {
-  //             'Custom Logo': logoUrl,
+  // Function to add product with custom logo to cart
+  const addProductWithCustomLogo = async (variantId, imageUrl) => {
+    try {
+      // Get the current checkout or create a new one
+      const globalVariantId = btoa(`gid://shopify/ProductVariant/${variantId}`);
+
+      let checkoutId = localStorage.getItem("checkoutId");
+      if (!checkoutId) {
+        const checkout = await shopifyClient.checkout.create();
+        checkoutId = checkout.id;
+        localStorage.setItem("checkoutId", checkoutId);
+      }
+
+      // Prepare the line item with custom properties
+      const lineItemsToAdd = [
+        {
+          variantId, // Shopify variant ID
+          quantity: 1,
+          customAttributes: [
+            {
+              key: "Custom Image",
+              value: imageUrl, // URL of the custom logo
+            },
+          ],
+        },
+      ];
+
+      // Add the line item to the checkout
+      const checkout = await shopifyClient.checkout.addLineItems(
+        checkoutId,
+        lineItemsToAdd
+      );
+
+      // Log the updated checkout information
+      console.log("Checkout:", checkout);
+
+      // Update the cart UI
+      // await updateCartUI();
+
+      return checkout;
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
+
+  // const addProductWithCustomLogo = async (variantId, customImageUrl) => {
+  //   try {
+  //     const globalVariantId = btoa(`gid://shopify/ProductVariant/${variantId}`);
+
+  //     const response = await fetch("/api/add", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         variantId: globalVariantId,
+  //         quantity: 1,
+  //         customAttributes: [
+  //           {
+  //             key: "Custom Image",
+  //             value: customImageUrl,
   //           },
-  //         }),
-  //       });
-  // console.log('response', response)
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         console.log('data', data)
-  //         setStatus('Product added to cart!');
-  //         // Optionally, redirect to the cart page or update the cart count in the UI
-  //       } else {
-  //         throw new Error('Failed to add to cart');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //       setStatus('Error adding to cart');
+  //         ],
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to add product to cart");
   //     }
-  //   };
 
-  function refreshCart() {
-    fetch("/api/updateCartLines")
-      .then((response) => response.json().then(data => setCartItems(...data.items, product)))
-  }
+  //     const data = await response.json();
+  //     console.log("Product added to cart", data);
 
-  // const addToCart = async (variantId, imageUrl) => {
-  //   console.log("productId from add to cart", variantId);
-  //   console.log("quantity from add to cart", imageUrl);
+  //     // Update the cart UI
+  //     await updateCartUI();
 
-  //   const response = await fetch("/api/cartAdd", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ variantId, imageUrl }),
-  //   });
-
-  //   // console.log("response", response.json().then(data => setProduct(data)));
-
-
-  //   if (!response.ok) {
-  //     console.error("Error adding to cart:", response.statusText);
-  //   } else {
-      
-  //     await response.json().then(data => setProduct(data))
-  //     await refreshCart()
-  //     console.log("Item added to cart", cartItems);
-      
+  //   } catch (error) {
+  //     console.error("Error adding product to cart:", error);
   //   }
   // };
 
-  const addToCart = async (variantId, imageUrl) => {
-    console.log("productId from add to cart", variantId);
-    console.log("quantity from add to cart", imageUrl);
-  
-    try {
-      // Step 1: Send request to the server to add item to cart
-      const response = await fetch("/api/cartAdd", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Access-Control-Allow-Origin': '*',
-        },
-        body: JSON.stringify({ variantId, imageUrl }),
-      });
-  
-      if (!response.ok) {
-        console.error("Error adding to cart:", response.statusText);
-        return;
-      }
-  
-      const data = await response.json();
-      console.log("Item added to cart", data);
-  
-      // Step 2: Open the cart drawer
-      // await openCartDrawer();
-  
-      // Step 3: Refresh the cart drawer contents
-      refreshCartDrawer();
-  
-    } catch (error) {
-      console.error("An error occurred while adding to cart:", error);
-    }
-  };
-  
   // Function to open the cart drawer
-  const openCartDrawer = () => {
-    const cartDrawer = document.querySelector(['cart-side-drawer']);
-    console.log('cartDrawer', cartDrawer)
-    if (cartDrawer) {
-      cartDrawer.style.display = "flex"; // Assuming 'active' class opens the drawer
+  // const openCartDrawer = () => {
+  //   const cartDrawerButton = document.querySelector('[href="#cart-side-drawer"]');
+  //   if (cartDrawerButton) {
+  //     cartDrawerButton.click();
+  //   } else {
+  //     console.error('Cart drawer button not found');
+  //   }
+  // };
+
+  // const addToCart = async (variantId, customLogoUrl) => {
+  //   try {
+  //     const response = await fetch('/api/addToCart', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ variantId, customLogoUrl }),
+  //     });
+
+  //     if (!response.ok) {
+  //       console.error('Failed to add to cart:', response.statusText);
+  //       return;
+  //     }
+
+  //     const data = await response.json();
+  //     console.log('Item added to cart:', data);
+
+  //     // Optionally, trigger the cart drawer to open here
+  //     openCartDrawer();
+
+  //   } catch (error) {
+  //     console.error('Error adding to cart:', error);
+  //   }
+  // };
+
+  const processCheckout = async () => {
+    const response = await fetch("/cart.js");
+    const cart = await response.json();
+
+    const orderData = {
+      recipient: {
+        name: "Customer Name", // Replace with real data
+        address1: "Customer Address", // Replace with real data
+        city: "City", // Replace with real data
+        // Other necessary fields
+      },
+      items: cart.items.map((item) => ({
+        sync_variant_id: item.variant_id,
+        quantity: item.quantity,
+        files: [{ url: item.properties["Custom Logo"] }],
+      })),
+      // Other necessary fields
+    };
+
+    const printfulResponse = await fetch("https://api.printful.com/orders", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.PRINTFUL_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!printfulResponse.ok) {
+      console.error(
+        "Failed to send order to Printful:",
+        printfulResponse.statusText
+      );
+    } else {
+      const result = await printfulResponse.json();
+      console.log("Order sent to Printful:", result);
     }
   };
-  
+
   // Function to refresh the cart drawer contents
   const refreshCartDrawer = async () => {
     try {
-      const response = await fetch('/api/cart');
+      const response = await fetch("/api/cart");
       if (!response.ok) {
         console.error("Error refreshing cart drawer:", response.statusText);
         return;
       }
-  
+
       const cartData = await response.json();
-      console.log('cart-----', cartData)
+      console.log("cart-----", cartData);
       // updateCartUI(cartData); // Function to update the cart drawer with new data
-  
     } catch (error) {
-      console.error("An error occurred while refreshing the cart drawer:", error);
+      console.error(
+        "An error occurred while refreshing the cart drawer:",
+        error
+      );
     }
   };
-  
-  // Function to update the cart drawer UI
-  const updateCartUI = (cartData) => {
-    const cartItemsContainer = document.querySelector('[data-cart-drawer-body]');
-    if (cartItemsContainer) {
-      // Update the cart UI here with the cartData, like rendering new items, updating totals, etc.
-      // This part depends on how your theme and UI are structured
-    }
+
+  // async function fetchCheckout(checkoutId) {
+  //   const query = `
+  //     query($checkoutId: ID!) {
+  //       node(id: $checkoutId) {
+  //         ... on Checkout {
+  //           id
+  //           lineItems(first: 10) {
+  //             edges {
+  //               node {
+  //                 id
+  //                 title
+  //                 quantity
+  //                 variant {
+  //                   id
+  //                   title
+  //                   priceV2 {
+  //                     amount
+  //                     currencyCode
+  //                   }
+  //                 }
+  //                 customAttributes {
+  //                   key
+  //                   value
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `;
+
+  //   const variables = { checkoutId };
+
+  //   console.log('--variables---', variables)
+
+  //   const response = await fetch('https://d5b9de-6c.myshopify.com/api/2024-04/graphql', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+  //     },
+  //     body: JSON.stringify({ query, variables }),
+  //   });
+
+  //   // console.log('--response--', response)
+  //   const result = await response.json();
+
+  //   return result?.data?.node;
+  // }
+
+  // Function to fetch the updated checkout details
+  // const fetchCheckout = async (checkoutId) => {
+  //   const query = `
+  //     query($checkoutId: ID!) {
+  //       node(id: $checkoutId) {
+  //         ... on Checkout {
+  //           id
+  //           lineItems(first: 10) {
+  //             edges {
+  //               node {
+  //                 id
+  //                 title
+  //                 quantity
+  //                 variant {
+  //                   id
+  //                   title
+  //                   priceV2 {
+  //                     amount
+  //                     currencyCode
+  //                   }
+  //                 }
+  //                 customAttributes {
+  //                   key
+  //                   value
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   `;
+
+  //   const variables = { checkoutId };
+
+  //   const response = await fetch('/graphql', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       // Add your API credentials or token here
+  //     },
+  //     body: JSON.stringify({ query, variables }),
+  //   });
+
+  //   const data = await response.json();
+  //   // Return the checkout data
+  //   return data.data.node;
+  // };
+
+  const fetchCheckout = async (checkoutId) => {
+    const query = `
+        query($checkoutId: ID!) {
+          node(id: $checkoutId) {
+            ... on Checkout {
+              id
+              lineItems(first: 10) {
+                edges {
+                  node {
+                    id
+                    title
+                    quantity
+                    variant {
+                      id
+                      title
+                      priceV2 {
+                        amount
+                        currencyCode
+                      }
+                    }
+                    customAttributes {
+                      key
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+    const variables = { checkoutId };
+
+    const response = await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Add your API credentials or token here
+        "X-Shopify-Storefront-Access-Token":
+          process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const data = await response.json();
+    // Return the checkout data
+    console.log("--fetch checkout--", data.data.node);
+    return data.data.node;
   };
+  async function updateCart() {
+    const response = await fetch("/cart.js");
+    const cartData = await response.json();
+    console.log("updating the cart", cartData); // Check what the cart looks like
+    // updateCartUI(cartData);
+  }
+
+  const addProductToCart = async (
+    checkoutId,
+    customAttributes,
+    variantId,
+    quantity
+  ) => {
+    // Create a new checkout if checkoutId doesn't exist
+    console.log("--checkoutId--", checkoutId);
+    console.log("--variantId--", variantId);
+    console.log("--customAttributes--", customAttributes);
+    console.log("--quantity--", quantity);
+
+    if (!checkoutId) {
+      await createCheckout();
+    }
+
+    const mutation = `
+        mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) {
+          checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) {
+            checkout {
+              id
+              lineItems(first: 10) {
+                edges {
+                  node {
+                    id
+                    title
+                    quantity
+                    variant {
+                      id
+                      title
+                      priceV2 {
+                        amount
+                        currencyCode
+                      }
+                    }
+                    customAttributes {
+                      key
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+    const encodeShopifyId = (type, id) => {
+      return btoa(`gid://shopify/${type}/${id}`);
+    };
+
+    console.log("---mutation---", mutation);
+    // Convert your variantId and checkoutId
+    const globalVariantId = encodeShopifyId(
+      "ProductVariant",
+      variantId
+    ).toString();
+    const globalCheckoutId = encodeShopifyId("Checkout", checkoutId);
+
+    console.log("--globalVariantId--", globalVariantId);
+    console.log("--globalCheckoutId--", globalCheckoutId);
+
+    // Example: Convert variantId to global ID
+    // const globalVariantId = encodeShopifyId('ProductVariant', variantId);
+
+    const variables = {
+      checkoutId,
+      lineItems: [
+        {
+          variantId: globalVariantId,
+          quantity: parseInt(quantity),
+          customAttributes,
+        },
+      ],
+    };
+
+    const response = await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Add your API credentials or token here
+        "X-Shopify-Storefront-Access-Token":
+          process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+      },
+      body: JSON.stringify({ query: mutation, variables }),
+    });
+
+    const data = await response.json();
+    console.log("hello data", data);
+    // Optionally update the checkout state
+    // const newCheckout = data?.data?.checkoutLineItemsAdd?.checkout;
+    // setCheckoutId(newCheckout?.id);
+    // setLineItems(newCheckout?.lineItems?.edges?.map(edge => edge?.node));
+    // Ensure you have valid data and update the lineItems state
+    if (data && data.data && data.data.checkoutLineItemsAdd) {
+      const updatedCheckout = data.data.checkoutLineItemsAdd.checkout;
+      const updatedLineItems = updatedCheckout.lineItems.edges.map(
+        (edge) => edge.node
+      );
+
+      // Update your state
+      setLineItems(updatedLineItems);
+      setCheckoutId(updatedCheckout.id);
+    }
+
+    const encodedVariantId = encodeShopifyId("ProductVariant", variantId);
+    const sendMessage = () => {
+      const data = {
+        message: "add-to-cart",
+        payload: {
+          // variantId:`gid://shopify/ProductVariant/${variantId}`,
+          quantity: parseInt(quantity),
+          variantId: variantId.toString(),
+          customAttributes: [{ key: "Logo Preview", value: imageData }],
+        },
+      };
+
+      // Sending the message to the parent window (Shopify Store)
+      window.parent.postMessage(data, "*");
+    };
+
+    // Trigger the function when needed
+    sendMessage();
+
+    // Trigger cart drawer to open
+    // openCartDrawer();
+    // const updatedCart = await updateCart();
+    // const updatedCartReponse = updatedCart.json()
+
+    // console.log('updatedCartReponse', updatedCartReponse)
+  };
+
+  // Function to create a new checkout if there's no checkoutId
+  const createCheckout = async () => {
+    const query = `
+      mutation {
+        checkoutCreate(input: {}) {
+          checkout {
+            id
+          }
+        }
+      }
+    `;
+
+    const response = await fetch(
+      "https://d5b9de-6c.myshopify.com/api/2023-04/graphql.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token":
+            process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+          // Add your API credentials or token here
+        },
+        body: JSON.stringify({ query }),
+      }
+    );
+
+    const data = await response.json();
+    console.log("--data--", data);
+    const newCheckoutId = data.data.checkoutCreate.checkout.id;
+    console.log("--newCheckoutId--", newCheckoutId);
+    setCheckoutId(newCheckoutId);
+  };
+
+  // Load the checkout or create one when the component mounts
+  useEffect(() => {
+    if (!checkoutId) {
+      createCheckout();
+    }
+  }, [checkoutId]);
+  console.log("checkoutId updated!!", checkoutId);
+
+  async function updateCartFromCheckout(checkoutId) {
+    const checkoutData = await fetchCheckout(checkoutId);
+
+    console.log("---checkoutData from update cart--", checkoutData);
+
+    if (checkoutData && checkoutData.lineItems) {
+      // Clear existing cart lines
+      const cartContainer = document.querySelector(".cart-items");
+      if (cartContainer) {
+        cartContainer.innerHTML = "";
+
+        // Add new cart lines
+        checkoutData.lineItems.edges.forEach(({ node }) => {
+          const cartItem = document.createElement("div");
+          cartItem.className = "cart-item";
+
+          cartItem.innerHTML = `
+            <div class="cart-item-title">${node.title}</div>
+            <div class="cart-item-quantity">Quantity: ${node.quantity}</div>
+            <div class="cart-item-price">${node.variant.priceV2.amount} ${node.variant.priceV2.currencyCode}</div>
+          `;
+
+          cartContainer.appendChild(cartItem);
+        });
+
+        // Update cart count
+        const cartCount = document.querySelector(".cart-count");
+        if (cartCount) {
+          cartCount.textContent = checkoutData.lineItems.edges.length;
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (checkoutId) {
+      console.log("--updated from useEffect!!---");
+      updateCartFromCheckout(checkoutId); // Update the cart UI
+    }
+  }, [checkoutId]);
+
+  // const checkoutId = "gid://shopify/Checkout/18aa64c754e32c20eeab941a5abf9d04?key=18c126ffb2d72c08a774e554bd0937f2"
+  // updateCartFromCheckout(checkoutId);
+
+  console.log("quantity---", quantity);
 
   return (
     <div
@@ -719,10 +1181,10 @@ export default function LogoCustomizer() {
                   height: "350px",
                   borderRadius: "10px",
                   overflow: "hidden",
-                  width: "auto",
+                  // width: "auto",
 
                   // width: "430px",
-                  // width: "380px",
+                  width: "380px",
                   position: "relative",
                   top: "0",
                   // left: "15%",
@@ -849,25 +1311,84 @@ export default function LogoCustomizer() {
 
         {/* Image Processing  */}
         <div className={styles.buttonWrapper}>
+          
           <div className={styles.finalComfirm}>
             {/* <h2>Finalize Your Logo</h2> */}
             <div className={styles.confirmationWrapper}>
+            <div className={styles.quantityContainer}>
+                <p className={roboto_condensed.className}>Select product quantity</p>
+                <div className={styles.quantityBtnWrapper}>
+                  <button
+                    onClick={decrementQuantity}
+                    className={styles.quantityBtn}
+                    id="decrementBtn"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="text"
+                    className={styles.quantityInput}
+                    id="quantity"
+                    value={quantity}
+                  />
+                  <button
+                    onClick={incrementQuantity}
+                    className={styles.quantityBtn}
+                    id="incrementBtn"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               <button
                 className={`${roboto_condensed.className} ${styles.confirm}`}
                 onClick={generateImage}
               >
                 Confirm Selection
               </button>
-              <button
+              {/* <button
                 className={`${roboto_condensed.className} ${styles.placeOrder}`}
                 // style={{ width: "100%" }}
                 disabled={!imageData}
                 onClick={handlePlaceOrder}
               >
                 Place Order
-              </button>
+              </button> */}
               {/* Add to cart */}
-              <button onClick={() => addToCart(variantId, imageData)}>
+              {/* <button onClick={() => addToCart(variantId, imageData)}> */}
+              {/* <button
+                onClick={() => addProductWithCustomLogo(variantId, imageData)}
+              >
+                Add to Cart
+              </button>  */}
+              {/* Input field for quantity */}
+              {/* <div className={styles.quantityContainer}>
+ <label htmlFor="quantity">Quantity</label>
+              <input
+              className={styles.quantityBtn}
+                type="number"
+                id="quantity"
+                value={quantity}
+                min="1"
+                onChange={handleQuantityChange} // Update quantity on change
+                placeholder="Enter quantity"
+              />
+              </div> */}
+
+              
+              <button
+                className={`${roboto_condensed.className} ${styles.placeOrder}`}
+                disabled={!imageData}
+                onClick={() =>
+                  addProductToCart(
+                    checkoutId,
+                    { key: "Custom Logo", value: imageData },
+                    variantId,
+                    quantity
+                  )
+                }
+              >
                 Add to Cart
               </button>
               <p

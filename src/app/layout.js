@@ -11,6 +11,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      	<meta name="shopify-api-key" content="%SHOPIFY_API_KEY%" />
+        <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
       <body className={inter.className}>{children}</body>
     </html>
   );

@@ -28,7 +28,7 @@ export default async function handler(req, res) {
           variant_id: item.variant_id,  // Replace with Printful's variant_id
           quantity: item.quantity,
           files: [{
-            url: customAttributes.['Logo Preview'],  // Assuming image URL is passed in the properties
+            url: customAttributes['Logo Preview'],  // Assuming image URL is passed in the properties
           }],
         })),
       }, {

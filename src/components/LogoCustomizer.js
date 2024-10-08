@@ -1029,7 +1029,7 @@ export default function LogoCustomizer() {
                     {/* {palette.charAt(0).toUpperCase() + palette.slice(1)} */}
                     {palettes[palette].map(color => {
                       return (
-                        <span style={{backgroundColor: color, color: 'transparent'}}>ddd</span>
+                        <span key={color} style={{backgroundColor: color, color: 'transparent'}}>ddd</span>
                       )
                     })}
                   </button>

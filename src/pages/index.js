@@ -18,6 +18,7 @@ const ClearIcon = () => (
 
 export default function Home() {
   return (
+    // <div>TEST</div>
     <LogoCustomizer />
   )
 }

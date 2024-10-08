@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { variantMapping } from "../../productVariants";
 import Image from "next/image";
 import Client from "shopify-buy";
-
+import '../app/globals.css'
 import createApp from "@shopify/app-bridge";
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
@@ -33,50 +33,15 @@ export default function LogoCustomizer() {
   const router = useRouter();
   const { productId, variantId, productTitle, image } = router.query;
 
-  // useEffect(() => {
-  //   const sendMessage = () => {
-  //     const data = {
-  //       message: 'add-to-cart',
-  //       payload: {
-  //         variantId: variantId,
-  //         customAttributes: [{ key: 'Logo', value: 'logo-url-here' }],
-  //       },
-  //     };
 
-  //     // Sending the message to the parent window (Shopify Store)
-  //     window.parent.postMessage(data, '*');
-  //   };
-
-  //   // Trigger the function when needed
-  //   sendMessage();
-  // }, []);
-
-  useEffect(() => {
-    if (productTitle && variantId) {
-      console.log("Product Title:", productTitle);
-      console.log("Variant ID:", variantId);
-    }
-  }, [productTitle, variantId]);
 
   console.log("productId", productId);
   console.log("variantId", variantId);
-  // console.log('router.query', router.query)
 
-  // Create a reference to the logo div
+  //  References and States
   const logoRef = useRef(null);
   const [imageData, setImageData] = useState("");
   const [status, setStatus] = useState("");
-
-  // Predefined colors for the user to choose from
-  const colorOptions = ["#FF5733", "#33FF57", "#3357FF", "#FFD700", "#FF33A8"];
-
-  // Color palettes for the user to choose from
-  const palettes = {
-    blue: ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087"],
-    green: ["#006400", "#228B22", "#32CD32", "#7CFC00", "#ADFF2F"],
-    red: ["#8B0000", "#B22222", "#DC143C", "#FF4500", "#FF6347"],
-  };
-
   const [selectedColor, setSelectedColor] = useState("#ffffff"); // To store the selected color
 
   const [selectedValues, setSelectedValues] = useState([]);
@@ -92,6 +57,16 @@ export default function LogoCustomizer() {
   const [checkoutId, setCheckoutId] = useState(null);
   const [lineItems, setLineItems] = useState([]);
   const [quantity, setQuantity] = useState(1); // Set the initial quantity to 1
+
+  // Predefined colors for the user to choose from
+  const colorOptions = ["#FF5733", "#33FF57", "#3357FF", "#FFD700", "#FF33A8"];
+
+  // Color palettes for the user to choose from
+  const palettes = {
+    blue: ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087"],
+    green: ["#006400", "#228B22", "#32CD32", "#7CFC00", "#ADFF2F"],
+    red: ["#8B0000", "#B22222", "#DC143C", "#FF4500", "#FF6347"],
+  };
 
   const customBarOrder = [2, 0, 1, 4, 3];
 
@@ -309,11 +284,6 @@ export default function LogoCustomizer() {
       setStatus(`Error placing order: ${result.message}`);
     }
   };
-
-  // Update the quantity when the user changes the input
-  // const handleQuantityChange = (e) => {
-  //   setQuantity(e.target.value);
-  // };
 
   const incrementQuantity = (e) => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -568,106 +538,6 @@ export default function LogoCustomizer() {
     }
   };
 
-  // async function fetchCheckout(checkoutId) {
-  //   const query = `
-  //     query($checkoutId: ID!) {
-  //       node(id: $checkoutId) {
-  //         ... on Checkout {
-  //           id
-  //           lineItems(first: 10) {
-  //             edges {
-  //               node {
-  //                 id
-  //                 title
-  //                 quantity
-  //                 variant {
-  //                   id
-  //                   title
-  //                   priceV2 {
-  //                     amount
-  //                     currencyCode
-  //                   }
-  //                 }
-  //                 customAttributes {
-  //                   key
-  //                   value
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `;
-
-  //   const variables = { checkoutId };
-
-  //   console.log('--variables---', variables)
-
-  //   const response = await fetch('https://d5b9de-6c.myshopify.com/api/2024-04/graphql', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-  //     },
-  //     body: JSON.stringify({ query, variables }),
-  //   });
-
-  //   // console.log('--response--', response)
-  //   const result = await response.json();
-
-  //   return result?.data?.node;
-  // }
-
-  // Function to fetch the updated checkout details
-  // const fetchCheckout = async (checkoutId) => {
-  //   const query = `
-  //     query($checkoutId: ID!) {
-  //       node(id: $checkoutId) {
-  //         ... on Checkout {
-  //           id
-  //           lineItems(first: 10) {
-  //             edges {
-  //               node {
-  //                 id
-  //                 title
-  //                 quantity
-  //                 variant {
-  //                   id
-  //                   title
-  //                   priceV2 {
-  //                     amount
-  //                     currencyCode
-  //                   }
-  //                 }
-  //                 customAttributes {
-  //                   key
-  //                   value
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `;
-
-  //   const variables = { checkoutId };
-
-  //   const response = await fetch('/graphql', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       // Add your API credentials or token here
-  //     },
-  //     body: JSON.stringify({ query, variables }),
-  //   });
-
-  //   const data = await response.json();
-  //   // Return the checkout data
-  //   return data.data.node;
-  // };
-
   const fetchCheckout = async (checkoutId) => {
     const query = `
         query($checkoutId: ID!) {
@@ -890,6 +760,13 @@ export default function LogoCustomizer() {
     setCheckoutId(newCheckoutId);
   };
 
+  useEffect(() => {
+    if (productTitle && variantId) {
+      console.log("Product Title:", productTitle);
+      console.log("Variant ID:", variantId);
+    }
+  }, [productTitle, variantId]);
+
   // Load the checkout or create one when the component mounts
   useEffect(() => {
     if (!checkoutId) {
@@ -938,9 +815,6 @@ export default function LogoCustomizer() {
       updateCartFromCheckout(checkoutId); // Update the cart UI
     }
   }, [checkoutId]);
-
-  // const checkoutId = "gid://shopify/Checkout/18aa64c754e32c20eeab941a5abf9d04?key=18c126ffb2d72c08a774e554bd0937f2"
-  // updateCartFromCheckout(checkoutId);
 
   console.log("quantity---", quantity);
 
@@ -1047,7 +921,7 @@ export default function LogoCustomizer() {
       </div>
       <div
         className={`${styles.customization}`}
-        style={{ width: "90%", margin: "0 auto" }}
+        style={{ width: "90%" }}
       >
         <div className={styles.confirmOptions}>
           {/* Custom Color Settings Start  */}
@@ -1133,25 +1007,31 @@ export default function LogoCustomizer() {
               >
                 Pick a Palette:
               </label>
-              <div>
+              <div className={styles.paletteContainer}>
                 {Object.keys(palettes).map((palette) => (
                   <button
                     key={palette}
                     onClick={() => handlePaletteSelection(palette)}
                     className={roboto_condensed.className}
                     style={{
-                      backgroundColor: palettes[palette][2], // Displaying the middle color as the button color
-                      width: "60px",
+                      //backgroundColor: palettes[palette][2], // Displaying the middle color as the button color
+                      width: "120px",
+                      display: 'block',
                       height: "30px",
-                      margin: "0 5px",
+                      margin: "5px",
                       border:
-                        selectedPalette === palette ? "3px solid #000" : "none",
+                        selectedPalette === palette ? "1.75px solid #000" : "none",
                       borderRadius: "5px",
                       cursor: "pointer",
                       color: "white",
                     }}
                   >
-                    {palette.charAt(0).toUpperCase() + palette.slice(1)}
+                    {/* {palette.charAt(0).toUpperCase() + palette.slice(1)} */}
+                    {palettes[palette].map(color => {
+                      return (
+                        <span style={{backgroundColor: color, color: 'transparent'}}>ddd</span>
+                      )
+                    })}
                   </button>
                 ))}
               </div>
@@ -1172,39 +1052,29 @@ export default function LogoCustomizer() {
           <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
           {/* Attach the reference to this div */}
           <div ref={logoRef}>
+             
             <div className={styles.logo} id="logo">
               <div
                 style={{
                   display: "flex",
-                  margin: "0 auto",
+                  // margin: "0 auto",
                   alignItems: "flex-end",
                   height: "350px",
                   borderRadius: "10px",
-                  overflow: "hidden",
-                  // width: "auto",
-
+                  overflowX: "hidden",
+                  // width: "90%",
+                  justifyContent: 'center',
                   // width: "430px",
-                  width: "380px",
+                  // width: "380px",
+                  // width: "90%",
                   position: "relative",
                   top: "0",
                   // left: "15%",
                   // marginTop: '4rem'
-                  //   margin: "30px auto",
+                    // margin: "30px auto",
                 }}
               >
                 {Array.from({ length: 5 }).map((_, index) => {
-                  // const barIndex = customBarOrder[index];
-                  //   const selectedKey = selectedValues[barIndex];
-                  //   const backgroundColor = singleColorMode
-                  //     ? selectedValues.length > 1
-                  //       ? data[selectedValues[0]].colourHex
-                  //       : '#e0e0e0'
-                  //     : selectedColor
-                  //     ? selectedColor
-                  //     : selectedKey
-                  //     ? data[selectedKey].colourHex
-                  //     : '#e0e0e0';
-
                   // Determine the appropriate color for each bar
                   const barIndex = customBarOrder[index];
                   const selectedKey = selectedValues[barIndex];
@@ -1238,7 +1108,6 @@ export default function LogoCustomizer() {
                       className={styles[`option_${index}`]}
                       style={{
                         flex: 1,
-
                         backgroundColor: backgroundColor,
                         display: "flex",
                         flexDirection: "column",
@@ -1250,7 +1119,7 @@ export default function LogoCustomizer() {
                         textAlign: "center",
                         margin: "0 .45rem",
                         borderRadius: "55px",
-                        width: "65px",
+                        maxWidth: "65px",
                       }}
                     >
                       {selectedKey ? (
@@ -1297,7 +1166,7 @@ export default function LogoCustomizer() {
                 })}
               </div>
               {/* True Me Wordmark  */}
-              <div>
+              <div className={styles.wordMarkWrapper}>
                 <Image
                   className={styles.wordMark}
                   width={1000}
@@ -1306,17 +1175,19 @@ export default function LogoCustomizer() {
                 />
               </div>
             </div>
+            
           </div>
         </div>
 
         {/* Image Processing  */}
         <div className={styles.buttonWrapper}>
-          
           <div className={styles.finalComfirm}>
             {/* <h2>Finalize Your Logo</h2> */}
             <div className={styles.confirmationWrapper}>
-            <div className={styles.quantityContainer}>
-                <p className={roboto_condensed.className}>Select product quantity</p>
+              <div className={styles.quantityContainer}>
+                <p className={roboto_condensed.className}>
+                  Select product quantity
+                </p>
                 <div className={styles.quantityBtnWrapper}>
                   <button
                     onClick={decrementQuantity}
@@ -1376,7 +1247,6 @@ export default function LogoCustomizer() {
               />
               </div> */}
 
-              
               <button
                 className={`${roboto_condensed.className} ${styles.placeOrder}`}
                 disabled={!imageData}

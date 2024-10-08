@@ -74,10 +74,11 @@
 }
 
 .placeOrder {
-  /* background-color: #fff; */
-  /* color: #120D96; */
+  background-color: #345898;
+  color: #fff;
   padding: 10px 20px;
   margin-top: 10px;
+  border: 1px solid #dcdcdc;
   /* border: 1px solid #120D96; */
   border-radius: 5px;
   cursor: pointer;
@@ -87,6 +88,20 @@
   width: 100%;
   text-align: center;
   width: 12rem;
+  transition: all .5s ease;
+}
+
+.placeOrder:disabled {
+  width: 100%;
+  text-align: center;
+  width: 12rem;
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #f0f0f0; /* Light grey background to indicate the disabled state */
+  color: #a0a0a0; /* Grey text color to show it's disabled */
+  border: 1px solid #dcdcdc; /* A soft grey border */
+  cursor: not-allowed; /* Change cursor to not-allowed to signal it can't be clicked */
+  opacity: 0.6; /* Reduce opacity to emphasize the disabled look */
 }
 
 .clearAll {
@@ -477,10 +492,11 @@
   }
   
   .placeOrder {
-    /* background-color: #fff; */
-    /* color: #120D96; */
+    background-color: #345898;
+    color: #fff;
     padding: 10px 20px;
     margin-top: 10px;
+    border: 1px solid #dcdcdc;
     /* border: 1px solid #120D96; */
     border-radius: 5px;
     cursor: pointer;
@@ -490,6 +506,20 @@
     width: 100%;
     text-align: center;
     width: 12rem;
+    transition: all .5s ease;
+  }
+  
+  .placeOrder:disabled {
+    width: 100%;
+    text-align: center;
+    width: 12rem;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #f0f0f0; /* Light grey background to indicate the disabled state */
+    color: #a0a0a0; /* Grey text color to show it's disabled */
+    border: 1px solid #dcdcdc; /* A soft grey border */
+    cursor: not-allowed; /* Change cursor to not-allowed to signal it can't be clicked */
+    opacity: 0.6; /* Reduce opacity to emphasize the disabled look */
   }
   
   .clearAll {

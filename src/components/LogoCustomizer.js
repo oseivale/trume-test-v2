@@ -1059,7 +1059,7 @@ export default function LogoCustomizer() {
                   display: "flex",
                   // margin: "0 auto",
                   alignItems: "flex-end",
-                  height: "350px",
+                  height: "380px",
                   borderRadius: "10px",
                   overflowX: "hidden",
                   // width: "90%",
@@ -1133,6 +1133,7 @@ export default function LogoCustomizer() {
                               //   margin:'2rem auto',
                               display: "flex",
                               alignItems: "center",
+                              width: '2rem',
 
                               color:
                                 isPickerActive && textColor

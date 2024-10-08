@@ -135,8 +135,8 @@
 }
 
 .logo {
-  /* width: 400px; */
-  /* margin: 0 auto; */
+  width: 400px;
+  margin: 0 auto;
 }
 
 .customization {
@@ -385,6 +385,10 @@
   font-size: .85rem;
 }
 
+.singleColorMode p {
+  margin-top: .75rem;
+}
+
 .collapsibleContent {
   max-height: 0;
   overflow: hidden;
@@ -423,8 +427,8 @@
   }
 
   .logo {
-    /* width: 400px; */
-    /* margin: 0 auto; */
+    width: 400px;
+    margin: 0 auto;
   }
   
   .grid {

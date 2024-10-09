@@ -1,0 +1,272 @@
+{
+  "id": 8126996152497,
+  "title": "Crossbody bag",
+  "handle": "crossbody-bag",
+  "description": "Keep your style on point and your hands free with our versatile crossbody bag. It’s made of premium faux leather and features dark gray hardware. Thanks to the zip-top closure and multiple inside pockets, you can keep your essentials secure and organized. Transform this crossbody bag with removable wrist and shoulder straps to style it for day-to-night looks.\u003cbr\u003e\n\u003cbr\u003e\n• Outer fabric: faux leather \u003cbr\u003e\n• Lining: 100% polyester\u003cbr\u003e\n• 11″ × 8″ × 1.5″ (27.9 cm × 20.3 cm × 3.8 cm)\u003cbr\u003e\n• Dark gray hardware\u003cbr\u003e\n• Zip-top closure\u003cbr\u003e\n• Inside zip and slip pockets\u003cbr\u003e\n• Adjustable, removable wrist and shoulder straps\u003cbr\u003e\n• Strap drop length: 14″- 27″",
+  "published_at": "2024-09-11T23:21:51-04:00",
+  "created_at": "2024-09-11T23:21:45-04:00",
+  "vendor": "Trume",
+  "type": "",
+  "tags": ["accessories"],
+  "price": 3400,
+  "price_min": 3400,
+  "price_max": 3500,
+  "available": true,
+  "price_varies": true,
+  "compare_at_price": null,
+  "compare_at_price_min": 0,
+  "compare_at_price_max": 0,
+  "compare_at_price_varies": false,
+  "variants": [
+    {
+      "id": 44642011971761,
+      "title": "Black",
+      "option1": "Black",
+      "option2": null,
+      "option3": null,
+      "sku": "2569997_16708",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": {
+        "id": 36848262217905,
+        "product_id": 8126996152497,
+        "position": 7,
+        "created_at": "2024-09-19T00:47:02-04:00",
+        "updated_at": "2024-09-19T00:47:02-04:00",
+        "alt": null,
+        "width": 2000,
+        "height": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb06083d.jpg?v=1726721222",
+        "variant_ids": [44642011971761]
+      },
+      "available": true,
+      "name": "Crossbody bag - Black",
+      "public_title": "Black",
+      "options": ["Black"],
+      "price": 3400,
+      "weight": 300,
+      "compare_at_price": null,
+      "inventory_management": "shopify",
+      "barcode": null,
+      "featured_media": {
+        "alt": null,
+        "id": 29164605997233,
+        "position": 7,
+        "preview_image": {
+          "aspect_ratio": 1.0,
+          "height": 2000,
+          "width": 2000,
+          "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb06083d.jpg?v=1726721222"
+        }
+      },
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 44642012528817,
+      "title": "White",
+      "option1": "White",
+      "option2": null,
+      "option3": null,
+      "sku": "5178753_16704",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": {
+        "id": 36848258580657,
+        "product_id": 8126996152497,
+        "position": 1,
+        "created_at": "2024-09-19T00:46:49-04:00",
+        "updated_at": "2024-09-19T00:46:49-04:00",
+        "alt": null,
+        "width": 2000,
+        "height": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209",
+        "variant_ids": [44642012528817]
+      },
+      "available": true,
+      "name": "Crossbody bag - White",
+      "public_title": "White",
+      "options": ["White"],
+      "price": 3500,
+      "weight": 300,
+      "compare_at_price": null,
+      "inventory_management": "shopify",
+      "barcode": null,
+      "featured_media": {
+        "alt": null,
+        "id": 29164602818737,
+        "position": 1,
+        "preview_image": {
+          "aspect_ratio": 1.0,
+          "height": 2000,
+          "width": 2000,
+          "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209"
+        }
+      },
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    }
+  ],
+  "images": [
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb05e93c.jpg?v=1726721211",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05f17e.jpg?v=1726721213",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05fb08.jpg?v=1726721215",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-product-details-2-66ebacb05fc70.jpg?v=1726721218",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-2-66ebacb05fdac.jpg?v=1726721220",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb06083d.jpg?v=1726721222",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-back-66ebacb06127b.jpg?v=1726721223",
+    "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb06692e.jpg?v=1726721226"
+  ],
+  "featured_image": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209",
+  "options": ["Color"],
+  "media": [
+    {
+      "alt": null,
+      "id": 29164602818737,
+      "position": 1,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-front-66ebacb05bbe0.jpg?v=1726721209",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164603080881,
+      "position": 2,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb05e93c.jpg?v=1726721211"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb05e93c.jpg?v=1726721211",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164603343025,
+      "position": 3,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05f17e.jpg?v=1726721213"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05f17e.jpg?v=1726721213",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164603703473,
+      "position": 4,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05fb08.jpg?v=1726721215"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb05fb08.jpg?v=1726721215",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164604752049,
+      "position": 5,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-product-details-2-66ebacb05fc70.jpg?v=1726721218"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-product-details-2-66ebacb05fc70.jpg?v=1726721218",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164605833393,
+      "position": 6,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-2-66ebacb05fdac.jpg?v=1726721220"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-2-66ebacb05fdac.jpg?v=1726721220",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164605997233,
+      "position": 7,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb06083d.jpg?v=1726721222"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-front-66ebacb06083d.jpg?v=1726721222",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164606423217,
+      "position": 8,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-back-66ebacb06127b.jpg?v=1726721223"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-black-back-66ebacb06127b.jpg?v=1726721223",
+      "width": 2000
+    },
+    {
+      "alt": null,
+      "id": 29164606914737,
+      "position": 9,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb06692e.jpg?v=1726721226"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "//d5b9de-6c.myshopify.com/cdn/shop/files/all-over-print-crossbody-bag-white-back-66ebacb06692e.jpg?v=1726721226",
+      "width": 2000
+    }
+  ],
+  "requires_selling_plan": false,
+  "selling_plan_groups": [],
+  "content": "Keep your style on point and your hands free with our versatile crossbody bag. It’s made of premium faux leather and features dark gray hardware. Thanks to the zip-top closure and multiple inside pockets, you can keep your essentials secure and organized. Transform this crossbody bag with removable wrist and shoulder straps to style it for day-to-night looks.\u003cbr\u003e\n\u003cbr\u003e\n• Outer fabric: faux leather \u003cbr\u003e\n• Lining: 100% polyester\u003cbr\u003e\n• 11″ × 8″ × 1.5″ (27.9 cm × 20.3 cm × 3.8 cm)\u003cbr\u003e\n• Dark gray hardware\u003cbr\u003e\n• Zip-top closure\u003cbr\u003e\n• Inside zip and slip pockets\u003cbr\u003e\n• Adjustable, removable wrist and shoulder straps\u003cbr\u003e\n• Strap drop length: 14″- 27″"
+}

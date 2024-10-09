@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import { uploadImageToCloudinary } from "../lib/cloudinary";
-import { data } from "../data";
+import { data, classic, bright, spark } from "../data";
 import styles from "./styles.module.css";
 import { toPng, toJpeg } from "html-to-image";
 import { roboto_condensed } from "@/fonts";
@@ -9,10 +9,11 @@ import { useRouter } from "next/router";
 import { variantMapping } from "../../productVariants";
 import Image from "next/image";
 import Client from "shopify-buy";
-import '../app/globals.css'
+import "../app/globals.css";
 import createApp from "@shopify/app-bridge";
 import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
+import Dropdown from "./Dropdown";
 
 const ClearIcon = () => (
   <svg
@@ -31,12 +32,14 @@ const ClearIcon = () => (
 
 export default function LogoCustomizer() {
   const router = useRouter();
-  const { productId, variantId, productTitle, image } = router.query;
+  const { productId, variantId, productTitle, image, tags } = router.query;
 
-
+  const [dropdownOptions, setDropdownOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
 
   console.log("productId", productId);
   console.log("variantId", variantId);
+  console.log("productTag", tags);
 
   //  References and States
   const logoRef = useRef(null);
@@ -57,6 +60,48 @@ export default function LogoCustomizer() {
   const [checkoutId, setCheckoutId] = useState(null);
   const [lineItems, setLineItems] = useState([]);
   const [quantity, setQuantity] = useState(1); // Set the initial quantity to 1
+  const [coreValues, setCoreValues] = useState({});
+  let list = [];
+
+  useEffect(() => {
+    if (tags) {
+      const tagArray = tags.split(" "); // Split the tags by spaces into an array
+      const availableOptions = [];
+
+      if (tags.includes("bright")) {
+        availableOptions.push({ value: "bright", label: "Bright" });
+      }
+      if (tags.includes("spark")) {
+        availableOptions.push({ value: "spark", label: "Spark" });
+      }
+      if (tags.includes("classic")) {
+        availableOptions.push({ value: "classic", label: "Classic" });
+      }
+
+      setDropdownOptions(availableOptions); // Set options dynamically
+    }
+  }, [tags]);
+
+  console.log("dropdownOptions", dropdownOptions);
+
+  // Handle option change
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+
+    if (event.target.value === "classic") {
+      setCoreValues(classic);
+    }
+
+    if (event.target.value === "spark") {
+      setCoreValues(spark);
+    }
+
+    if (event.target.value === "bright") {
+      setCoreValues(bright);
+    }
+  };
+
+  console.log("coreValues", selectedOption === "bright");
 
   // Predefined colors for the user to choose from
   const colorOptions = ["#FF5733", "#33FF57", "#3357FF", "#FFD700", "#FF33A8"];
@@ -761,11 +806,12 @@ export default function LogoCustomizer() {
   };
 
   useEffect(() => {
-    if (productTitle && variantId) {
+    if (productTitle && variantId && tags) {
       console.log("Product Title:", productTitle);
       console.log("Variant ID:", variantId);
+      // getCoreValues()
     }
-  }, [productTitle, variantId]);
+  }, [productTitle, variantId, tags]);
 
   // Load the checkout or create one when the component mounts
   useEffect(() => {
@@ -816,7 +862,7 @@ export default function LogoCustomizer() {
     }
   }, [checkoutId]);
 
-  console.log("quantity---", quantity);
+  console.log("coreValues---", coreValues);
 
   return (
     <div
@@ -849,13 +895,65 @@ export default function LogoCustomizer() {
             className={roboto_condensed.className}
             style={{ fontWeight: "800" }}
           >
-            Scroll the core values below to the left, to view all the core value
+            Set your mode from the dropdown below, then scroll the core values from right to left, to view all the core value
             options.
           </p>
-        </div>
 
+           {/* <Dropdown tags={tags} /> */}
+        {/* <div className="dropdown-container">
+          <label htmlFor="dynamic-dropdown" className={"dropdown-label"}>
+            Select an Option
+          </label>
+          <select
+            id="dynamic-dropdown"
+            className="dropdown"
+            value={selectedOption}
+            onChange={handleSelectChange}
+          >
+            <option value="" disabled>
+              -- Choose an option --
+            </option>
+            {dropdownOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {selectedOption && (
+            <div className="selected-option">
+              <p>You selected: {selectedOption}</p>
+            </div>
+          )}
+        </div> */}
+        <div className={styles.dropdownContainer}>
+          <label htmlFor="dynamicDropdown" className={`${roboto_condensed.className} ${styles.dropdownLabel}`}>
+          Choose Your Mode
+          </label>
+          <select
+            id="dynamicDropdown"
+            className={styles.dropdown}
+            value={selectedOption}
+            onChange={handleSelectChange}
+          >
+            <option value="" disabled className={roboto_condensed.className}>
+              -- Choose an option --
+            </option>
+            {dropdownOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {selectedOption && (
+            <div className={`${roboto_condensed.className} ${styles.selectedOption}`}>
+             {/* <span>Selected Theme: </span> <p>{selectedOption}</p> */}
+            </div>
+          )}
+        </div>
+        </div>
+       
         <div className={styles.coreValueWrapper}>
-          {Object.keys(data).map((key) => {
+          {Object.keys(coreValues).map((key) => {
             const isSelected = selectedValues.includes(key);
             const selectedIndex = selectedValues.indexOf(key);
 
@@ -869,7 +967,9 @@ export default function LogoCustomizer() {
                     : ""
                 }
                 style={{
-                  backgroundColor: isSelected ? data[key].colourHex : "#D4D4D4",
+                  backgroundColor: isSelected
+                    ? coreValues[key].colourHex
+                    : "#D4D4D4",
                   color: "#fff",
                   width: "115px",
                   padding: "15px",
@@ -907,22 +1007,19 @@ export default function LogoCustomizer() {
                 <span
                   className={`${roboto_condensed.className} ${styles.shortCode}`}
                 >
-                  {data[key].shortCode}
+                  {coreValues[key].shortCode}
                 </span>
                 <span
                   className={`${roboto_condensed.className} ${styles.name}`}
                 >
-                  {data[key].name}
+                  {coreValues[key].name}
                 </span>
               </button>
             );
           })}
         </div>
       </div>
-      <div
-        className={`${styles.customization}`}
-        style={{ width: "90%" }}
-      >
+      <div className={`${styles.customization}`} style={{ width: "90%" }}>
         <div className={styles.confirmOptions}>
           {/* Custom Color Settings Start  */}
           {/* <h2>Additional Customization Options</h2> */}
@@ -1016,21 +1113,31 @@ export default function LogoCustomizer() {
                     style={{
                       //backgroundColor: palettes[palette][2], // Displaying the middle color as the button color
                       width: "120px",
-                      display: 'block',
+                      display: "block",
                       height: "30px",
                       margin: "5px",
                       border:
-                        selectedPalette === palette ? "1.75px solid #000" : "none",
+                        selectedPalette === palette
+                          ? "1.75px solid #000"
+                          : "none",
                       borderRadius: "5px",
                       cursor: "pointer",
                       color: "white",
                     }}
                   >
                     {/* {palette.charAt(0).toUpperCase() + palette.slice(1)} */}
-                    {palettes[palette].map(color => {
+                    {palettes[palette].map((color) => {
                       return (
-                        <span key={color} style={{backgroundColor: color, color: 'transparent'}}>ddd</span>
-                      )
+                        <span
+                          key={color}
+                          style={{
+                            backgroundColor: color,
+                            color: "transparent",
+                          }}
+                        >
+                          ddd
+                        </span>
+                      );
                     })}
                   </button>
                 ))}
@@ -1052,7 +1159,6 @@ export default function LogoCustomizer() {
           <h2 className={roboto_condensed.className}>Your Customized Logo</h2>
           {/* Attach the reference to this div */}
           <div ref={logoRef}>
-             
             <div className={styles.logo} id="logo">
               <div
                 style={{
@@ -1063,7 +1169,7 @@ export default function LogoCustomizer() {
                   borderRadius: "10px",
                   overflowX: "hidden",
                   // width: "90%",
-                  justifyContent: 'center',
+                  justifyContent: "center",
                   // width: "430px",
                   // width: "380px",
                   // width: "90%",
@@ -1071,7 +1177,7 @@ export default function LogoCustomizer() {
                   top: "0",
                   // left: "15%",
                   // marginTop: '4rem'
-                    // margin: "30px auto",
+                  // margin: "30px auto",
                 }}
               >
                 {Array.from({ length: 5 }).map((_, index) => {
@@ -1085,9 +1191,9 @@ export default function LogoCustomizer() {
                     // In single color mode, use the first selected value's color or the custom color
                     backgroundColor =
                       selectedValues.length > 1
-                        ? data[selectedValues[0]].colourHex
+                        ? coreValues[selectedValues[0]].colourHex
                         : selectedValues.length === 1
-                        ? data[selectedValues[0]].colourHex
+                        ? coreValues[selectedValues[0]].colourHex
                         : "#e0e0e0";
                   } else if (selectedPalette) {
                     // If a palette is selected, use the corresponding color from the palette
@@ -1098,7 +1204,7 @@ export default function LogoCustomizer() {
                   } else {
                     // Default behavior for individual value selection
                     backgroundColor = selectedKey
-                      ? data[selectedKey].colourHex
+                      ? coreValues[selectedKey].colourHex
                       : "#e0e0e0";
                   }
 
@@ -1133,7 +1239,7 @@ export default function LogoCustomizer() {
                               //   margin:'2rem auto',
                               display: "flex",
                               alignItems: "center",
-                              width: '2rem',
+                              width: "2rem",
 
                               color:
                                 isPickerActive && textColor
@@ -1142,10 +1248,10 @@ export default function LogoCustomizer() {
                             }}
                           >
                             <h style={{ fontSize: "2rem" }}>
-                              {data[selectedKey].shortCode[0]}
+                              {coreValues[selectedKey].shortCode[0]}
                             </h>
                             <p style={{ fontSize: "1.3rem" }}>
-                              {data[selectedKey].shortCode[1]}
+                              {coreValues[selectedKey].shortCode[1]}
                             </p>
                           </span>
 
@@ -1176,7 +1282,6 @@ export default function LogoCustomizer() {
                 />
               </div>
             </div>
-            
           </div>
         </div>
 

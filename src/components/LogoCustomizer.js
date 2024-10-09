@@ -971,7 +971,7 @@ export default function LogoCustomizer() {
                     ? coreValues[key].colourHex
                     : "#D4D4D4",
                   color: "#fff",
-                  width: "115px",
+                  width: "140px",
                   padding: "15px",
                   margin: "5px",
                   border: "none",

@@ -895,12 +895,12 @@ export default function LogoCustomizer() {
             className={roboto_condensed.className}
             style={{ fontWeight: "800" }}
           >
-            Set your mode from the dropdown below, then scroll the core values from right to left, to view all the core value
-            options.
+            Set your mode from the dropdown below, then scroll the core values
+            from right to left, to view all the core value options.
           </p>
 
-           {/* <Dropdown tags={tags} /> */}
-        {/* <div className="dropdown-container">
+          {/* <Dropdown tags={tags} /> */}
+          {/* <div className="dropdown-container">
           <label htmlFor="dynamic-dropdown" className={"dropdown-label"}>
             Select an Option
           </label>
@@ -925,33 +925,38 @@ export default function LogoCustomizer() {
             </div>
           )}
         </div> */}
-        <div className={styles.dropdownContainer}>
-          <label htmlFor="dynamicDropdown" className={`${roboto_condensed.className} ${styles.dropdownLabel}`}>
-          Choose Your Mode
-          </label>
-          <select
-            id="dynamicDropdown"
-            className={styles.dropdown}
-            value={selectedOption}
-            onChange={handleSelectChange}
-          >
-            <option value="" disabled className={roboto_condensed.className}>
-              -- Choose an option --
-            </option>
-            {dropdownOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+          <div className={styles.dropdownContainer}>
+            <label
+              htmlFor="dynamicDropdown"
+              className={`${roboto_condensed.className} ${styles.dropdownLabel}`}
+            >
+              Choose Your Mode
+            </label>
+            <select
+              id="dynamicDropdown"
+              className={styles.dropdown}
+              value={selectedOption}
+              onChange={handleSelectChange}
+            >
+              <option value="" disabled className={roboto_condensed.className}>
+                -- Choose an option --
               </option>
-            ))}
-          </select>
-          {selectedOption && (
-            <div className={`${roboto_condensed.className} ${styles.selectedOption}`}>
-             {/* <span>Selected Theme: </span> <p>{selectedOption}</p> */}
-            </div>
-          )}
+              {dropdownOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {selectedOption && (
+              <div
+                className={`${roboto_condensed.className} ${styles.selectedOption}`}
+              >
+                {/* <span>Selected Theme: </span> <p>{selectedOption}</p> */}
+              </div>
+            )}
+          </div>
         </div>
-        </div>
-       
+
         <div className={styles.coreValueWrapper}>
           {Object.keys(coreValues).map((key) => {
             const isSelected = selectedValues.includes(key);
@@ -1076,10 +1081,10 @@ export default function LogoCustomizer() {
                     }
                   >
                     <p>
-                      Checking this box will activate a single solid colour
-                      option, chosen by you. All the bars will be the same
-                      colour. Select your custom colour using the colour picker
-                      below:
+                      Checking this box will activate the colour picker below.
+                      Choose a single solid colour option. All
+                      the bars will be the same colour. Select your custom
+                      colour using the colour picker below:
                     </p>
                   </div>
                 </div>
@@ -1093,6 +1098,7 @@ export default function LogoCustomizer() {
                     name="colorPicker"
                     value={selectedColor}
                     onChange={handleColorChange}
+                    disabled={!isPickerActive}
                   />
                   {/* <p id="colorCode" className={styles.customColorCode}>{selectedColor}</p> */}
                 </div>

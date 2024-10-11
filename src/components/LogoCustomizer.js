@@ -15,6 +15,8 @@ import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import Dropdown from "./Dropdown";
 
+import { BrightWordMark, ClassicWordMark, LogoSvg, SparkWordMark } from "@/wordmarks";
+
 const ClearIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -61,6 +63,7 @@ export default function LogoCustomizer() {
   const [lineItems, setLineItems] = useState([]);
   const [quantity, setQuantity] = useState(1); // Set the initial quantity to 1
   const [coreValues, setCoreValues] = useState({});
+  const [wordMarkColor, setWordMarkColor] = useState('')
   let list = [];
 
   useEffect(() => {
@@ -350,6 +353,19 @@ export default function LogoCustomizer() {
     }
   };
 
+  const handleWordMarkColor = (event) => {
+    // if (isPickerActive) {
+    //   setSelectedColor(event.target.value);
+    //   // setPickerActive(!isPickerActive);
+    //   // setPickerActive(true)
+    // } else {
+    //   setSelectedPalette(null);
+    //   setSingleColorMode(false); // Turn off single color mode
+    //   setSelectedColor(null);
+    // }
+    setWordMarkColor(event.target.value)
+  };
+
   const toggleColorPicker = () => {
     setPickerActive(!isPickerActive);
     setSelectedPalette(null);
@@ -394,12 +410,13 @@ export default function LogoCustomizer() {
     if (luminance > 0.5) {
       return darkenColor(bgColor, 50);
     } else {
-      // If the background is dark, use a darker shade of the background color
+      // If the background is dark, use white
       return "#FFFFFF";
     }
   }
 
   const textColor = getTextColor(selectedColor);
+ 
 
   const shopifyClient = Client.buildClient({
     domain: "d5b9de-6c.myshopify.com",
@@ -864,18 +881,20 @@ export default function LogoCustomizer() {
 
   console.log("coreValues---", coreValues);
 
-  const setWordMark = (mode) => {
+  // setWordMarkColor('black');
+
+  const setWordMark = (mode, wordMarkColor) => {
     if(mode === 'classic' ){
       return (
-        <h1>Classic Wordmark goes here...</h1>
+        <ClassicWordMark textColor={wordMarkColor} />
       )
     } else if(mode === 'bright' ){
       return (
-        <h1>Bright Wordmark goes here...</h1>
+        <BrightWordMark textColor={wordMarkColor} />
       )
     } else if(mode === 'spark' ){
       return (
-        <h1>Spark Wordmark goes here...</h1>
+        <SparkWordMark textColor={wordMarkColor} />
       )
     }
   }
@@ -1121,6 +1140,40 @@ export default function LogoCustomizer() {
                 </div>
               </div>
             </div>
+            <div>
+            <div>
+                <div
+                  className={`${styles.colorPickerCheckBox} ${roboto_condensed.className}`}
+                >
+                 
+                  <div
+                    // className={
+                    //   isPickerActive ? styles.expand : styles.collapsibleContent
+                    // }
+                  >
+                   
+                  </div>
+                </div>
+                <div
+                  className={`${styles.colorPicker} ${roboto_condensed.className}`}
+                >
+                  <label for="colorPicker">Choose your wordmark color:</label>
+                  <p>
+                      Use the colour picker to set your custom wordmark colour.
+                    </p>
+                  <input
+                  className={styles.colorPickerInput}
+                    type="color"
+                    id="colorPicker"
+                    name="colorPicker"
+                    value={wordMarkColor}
+                    onChange={handleWordMarkColor}
+                    // disabled={!isPickerActive}
+                  />
+                  {/* <p id="colorCode" className={styles.customColorCode}>{selectedColor}</p> */}
+                </div>
+              </div>
+            </div>
             <div style={{ marginBottom: "20px" }}>
               <label
                 className={`${roboto_condensed.className} ${styles.paletteLabel}`}
@@ -1231,6 +1284,8 @@ export default function LogoCustomizer() {
                       : "#e0e0e0";
                   }
 
+                  // setWordMarkColor('black');
+
                   return (
                     <div
                       key={index}
@@ -1303,7 +1358,7 @@ export default function LogoCustomizer() {
                   height={1000}
                   src={"/TRUME_wordmarks_classic.png"}
                 /> */}
-                {setWordMark(selectedOption)}
+                {setWordMark(selectedOption, wordMarkColor)}
               </div>
             </div>
           </div>

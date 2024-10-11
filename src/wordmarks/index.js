@@ -40,7 +40,7 @@ export const ClassicWordMark = ({ textColor }) => {
   );
 };
 
-export const SparkWordMark = () => (
+export const SparkWordMark = ({ textColor}) => (
   <svg
     style={{ isolation: "isolate" }}
     xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@ export const SparkWordMark = () => (
   </svg>
 );
 
-export const SparkWordMarkV2 = () => (
+export const SparkWordMarkV2 = ({ textColor}) => (
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 144">
     {/* <defs>
     <style>
@@ -152,7 +152,7 @@ export const SparkWordMarkV2 = () => (
   </svg>
 );
 
-export const BrightWordMark = () => (
+export const BrightWordMark = ({textColor}) => (
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 144">
     {/* <defs>
     <style>

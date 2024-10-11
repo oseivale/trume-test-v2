@@ -89,6 +89,7 @@ export default function LogoCustomizer() {
 
   // Handle option change
   const handleSelectChange = (event) => {
+    handleClearAll()
     setSelectedOption(event.target.value);
 
     if (event.target.value === "classic") {
@@ -134,6 +135,8 @@ export default function LogoCustomizer() {
     setSingleColorMode(false); // Turn off single color mode
     setSelectedPalette(null);
     setPickerActive(false);
+    setSelectedColor('#FFFFFF')
+    setWordMarkColor('#000000')
   };
 
   const handleToggleSingleColor = () => {
@@ -388,7 +391,7 @@ export default function LogoCustomizer() {
     let r = 0,
       g = 0,
       b = 0;
-    if (hex.length === 7) {
+    if (hex?.length === 7) {
       r = parseInt(hex.slice(1, 3), 16);
       g = parseInt(hex.slice(3, 5), 16);
       b = parseInt(hex.slice(5, 7), 16);
@@ -1326,10 +1329,10 @@ export default function LogoCustomizer() {
                             }}
                           >
                             <h style={{ fontSize: "2rem" }}>
-                              {coreValues[selectedKey].shortCode[0]}
+                              {coreValues[selectedKey]?.shortCode[0]}
                             </h>
                             <p style={{ fontSize: "1.3rem" }}>
-                              {coreValues[selectedKey].shortCode[1]}
+                              {coreValues[selectedKey]?.shortCode[1]}
                             </p>
                           </span>
 

@@ -864,6 +864,22 @@ export default function LogoCustomizer() {
 
   console.log("coreValues---", coreValues);
 
+  const setWordMark = (mode) => {
+    if(mode === 'classic' ){
+      return (
+        <h1>Classic Wordmark goes here...</h1>
+      )
+    } else if(mode === 'bright' ){
+      return (
+        <h1>Bright Wordmark goes here...</h1>
+      )
+    } else if(mode === 'spark' ){
+      return (
+        <h1>Spark Wordmark goes here...</h1>
+      )
+    }
+  }
+
   return (
     <div
       className={`${styles.customizationContainer}${roboto_condensed.className}`}
@@ -1281,12 +1297,13 @@ export default function LogoCustomizer() {
               </div>
               {/* True Me Wordmark  */}
               <div className={styles.wordMarkWrapper}>
-                <Image
+                {/* <Image
                   className={styles.wordMark}
                   width={1000}
                   height={1000}
                   src={"/TRUME_wordmarks_classic.png"}
-                />
+                /> */}
+                {setWordMark(selectedOption)}
               </div>
             </div>
           </div>

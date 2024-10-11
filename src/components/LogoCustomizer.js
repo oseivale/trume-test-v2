@@ -1093,6 +1093,7 @@ export default function LogoCustomizer() {
                 >
                   <label for="colorPicker">Choose a color:</label>
                   <input
+                  className={styles.colorPickerInput}
                     type="color"
                     id="colorPicker"
                     name="colorPicker"

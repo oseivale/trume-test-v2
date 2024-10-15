@@ -15,7 +15,12 @@ import { getSessionToken } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import Dropdown from "./Dropdown";
 
-import { BrightWordMark, ClassicWordMark, LogoSvg, SparkWordMark } from "@/wordmarks";
+import {
+  BrightWordMark,
+  ClassicWordMark,
+  LogoSvg,
+  SparkWordMark,
+} from "@/wordmarks";
 
 const ClearIcon = () => (
   <svg
@@ -63,7 +68,7 @@ export default function LogoCustomizer() {
   const [lineItems, setLineItems] = useState([]);
   const [quantity, setQuantity] = useState(1); // Set the initial quantity to 1
   const [coreValues, setCoreValues] = useState({});
-  const [wordMarkColor, setWordMarkColor] = useState('')
+  const [wordMarkColor, setWordMarkColor] = useState("");
   let list = [];
 
   useEffect(() => {
@@ -89,7 +94,7 @@ export default function LogoCustomizer() {
 
   // Handle option change
   const handleSelectChange = (event) => {
-    handleClearAll()
+    handleClearAll();
     setSelectedOption(event.target.value);
 
     if (event.target.value === "classic") {
@@ -135,8 +140,8 @@ export default function LogoCustomizer() {
     setSingleColorMode(false); // Turn off single color mode
     setSelectedPalette(null);
     setPickerActive(false);
-    setSelectedColor('#FFFFFF')
-    setWordMarkColor('#000000')
+    setSelectedColor("#FFFFFF");
+    setWordMarkColor("#000000");
   };
 
   const handleToggleSingleColor = () => {
@@ -366,7 +371,7 @@ export default function LogoCustomizer() {
     //   setSingleColorMode(false); // Turn off single color mode
     //   setSelectedColor(null);
     // }
-    setWordMarkColor(event.target.value)
+    setWordMarkColor(event.target.value);
   };
 
   const toggleColorPicker = () => {
@@ -419,7 +424,6 @@ export default function LogoCustomizer() {
   }
 
   const textColor = getTextColor(selectedColor);
- 
 
   const shopifyClient = Client.buildClient({
     domain: "d5b9de-6c.myshopify.com",
@@ -887,20 +891,14 @@ export default function LogoCustomizer() {
   // setWordMarkColor('black');
 
   const setWordMark = (mode, wordMarkColor) => {
-    if(mode === 'classic' ){
-      return (
-        <ClassicWordMark textColor={wordMarkColor} />
-      )
-    } else if(mode === 'bright' ){
-      return (
-        <BrightWordMark textColor={wordMarkColor} />
-      )
-    } else if(mode === 'spark' ){
-      return (
-        <SparkWordMark textColor={wordMarkColor} />
-      )
+    if (mode === "classic") {
+      return <ClassicWordMark textColor={wordMarkColor} />;
+    } else if (mode === "bright") {
+      return <BrightWordMark textColor={wordMarkColor} />;
+    } else if (mode === "spark") {
+      return <SparkWordMark textColor={wordMarkColor} />;
     }
-  }
+  };
 
   return (
     <div
@@ -1120,9 +1118,9 @@ export default function LogoCustomizer() {
                   >
                     <p>
                       Checking this box will activate the colour picker below.
-                      Choose a single solid colour option. All
-                      the bars will be the same colour. Select your custom
-                      colour using the colour picker below:
+                      Choose a single solid colour option. All the bars will be
+                      the same colour. Select your custom colour using the
+                      colour picker below:
                     </p>
                   </div>
                 </div>
@@ -1131,7 +1129,7 @@ export default function LogoCustomizer() {
                 >
                   <label for="colorPicker">Choose a color:</label>
                   <input
-                  className={styles.colorPickerInput}
+                    className={styles.colorPickerInput}
                     type="color"
                     id="colorPicker"
                     name="colorPicker"
@@ -1144,28 +1142,25 @@ export default function LogoCustomizer() {
               </div>
             </div>
             <div>
-            <div>
+              <div>
                 <div
                   className={`${styles.colorPickerCheckBox} ${roboto_condensed.className}`}
                 >
-                 
                   <div
-                    // className={
-                    //   isPickerActive ? styles.expand : styles.collapsibleContent
-                    // }
-                  >
-                   
-                  </div>
+                  // className={
+                  //   isPickerActive ? styles.expand : styles.collapsibleContent
+                  // }
+                  ></div>
                 </div>
                 <div
                   className={`${styles.colorPicker} ${roboto_condensed.className}`}
                 >
                   <label for="colorPicker">Choose your wordmark color:</label>
                   <p>
-                      Use the colour picker to set your custom wordmark colour.
-                    </p>
+                    Use the colour picker to set your custom wordmark colour.
+                  </p>
                   <input
-                  className={styles.colorPickerInput}
+                    className={styles.colorPickerInput}
                     type="color"
                     id="colorPicker"
                     name="colorPicker"
@@ -1263,6 +1258,8 @@ export default function LogoCustomizer() {
                   // Determine the appropriate color for each bar
                   const barIndex = customBarOrder[index];
                   const selectedKey = selectedValues[barIndex];
+                  // console.log('background', backgroundColor)
+                  console.log("index", index);
 
                   let backgroundColor;
 
@@ -1340,13 +1337,15 @@ export default function LogoCustomizer() {
                         </>
                       ) : (
                         <span
+                          className={roboto_condensed.className}
                           style={{
                             fontSize: "14px",
                             color: "#aaa",
                             paddingBottom: "2rem",
                           }}
                         >
-                          Select Value
+                          {/* Select Value */}
+                          {`Core value #${barIndex + 1}`}
                         </span>
                       )}
                     </div>
